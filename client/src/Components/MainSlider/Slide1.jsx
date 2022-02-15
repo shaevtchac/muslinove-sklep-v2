@@ -47,7 +47,7 @@ const Slide1 = () => {
           </TextCard>
         </div>
         <Img1
-          src="./Images/dziecko_na_poduszce.jpg"
+          src="./images/dziecko_na_poduszce.jpg"
           alt="dziecko na poduszce"
         />
       </Container>

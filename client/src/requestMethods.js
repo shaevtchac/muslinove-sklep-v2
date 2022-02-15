@@ -1,8 +1,16 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/api/";
-const TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZDk3MTdkODRjZTQ3YzIyMzFjNTE1ZiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY0MjI1MDc1MSwiZXhwIjoxNjQyNTA5OTUxfQ.boUmaAU5_GIrLO2LDeS0W7WSEAJBdbU4tglHuzvY2qU";
+const BASE_URL = "https://sklep.muslinove.pl/api/"; //"http://localhost:5000/api/"; "https://sklep.muslinove.pl/api/"
+
+const storage = localStorage.getItem("persist:root");
+const localStorageUser = storage
+  ? JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
+      .currentUser
+  : null;
+const TOKEN = localStorageUser
+  ? JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
+      .currentUser.accessToken
+  : "";
 
 export const publicRequest = axios.create({
   baseURL: BASE_URL,

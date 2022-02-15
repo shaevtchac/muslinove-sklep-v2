@@ -67,7 +67,7 @@ const Slide3 = () => {
             </p>
           </TextCard>
         </div>
-        <Img1 src="./Images/box_prezent.jpg" />
+        <Img1 src="./images/box_prezent.jpg" />
       </Container>
     </Slide>
   );

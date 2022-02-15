@@ -36,7 +36,7 @@ const Slide2 = () => {
   return (
     <Slide index={2}>
       <Container>
-        <Img1 src="./Images/muslin_bawelniany.jpg" />
+        <Img1 src="./images/muslin_bawelniany.jpg" />
         <div>
           <STitle> Muślin Bawełniany</STitle>
           <TextCard>

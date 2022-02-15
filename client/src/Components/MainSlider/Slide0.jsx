@@ -37,8 +37,8 @@ const STitle = styled(Title)`
 const Slide0 = () => {
   return (
     <Slide index={0}>
-      <Img1 src="./Images/dziecko_usmiech.jpg" />
-      <Img2 src="./Images/box-start.png" />
+      <Img1 src="./images/dziecko_usmiech.jpg" />
+      <Img2 src="./images/box-start.png" />
       <STitle> Boxy prezentowe dla najmłodszych</STitle>
     </Slide>
   );

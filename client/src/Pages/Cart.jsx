@@ -147,20 +147,22 @@ const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const handleCheckout = () => {
     const startPayment = async () => {
+      let tpaySecData;
       try {
-        const res = await publicRequest.post("/md5", {
+        tpaySecData = await publicRequest.post("/tpay/md5", {
           amount: cart.total,
-        });
-        window.location.href =
-          "https://secure.tpay.com?id=" +
-          res.data.tpayId +
-          "&amount=" +
-          cart.total +
-          "&description=transakcja testowa&group=110&name=Nazwa Klienta&email=email@klienta.com&accept_tos=1&md5sum=" +
-          res.data.md5Sum;
+        }).data;
       } catch (error) {
         console.log(error);
       }
+
+      // window.location.href =
+      //   "https://secure.tpay.com?id=" +
+      //   tpaySecData.tpayId +
+      //   "&amount=" +
+      //   cart.total +
+      //   "&description=transakcja testowa&group=110&name=Nazwa Klienta&email=email@klienta.com&accept_tos=1&md5sum=" +
+      //   tpaySecData.md5Sum;
     };
     startPayment();
   };

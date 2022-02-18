@@ -59,6 +59,7 @@ const Product = styled.div`
   border-bottom: 1px solid ${templateColors.BODY_COLOR_LIGHT};
 `;
 const ImgContainer = styled.div`
+  width: 120px;
   background-color: ${templateColors.BODY_COLOR_DARK};
   border-radius: 10px 0 0 10px;
 `;
@@ -67,7 +68,10 @@ const ProductDetail = styled.div`
   display: flex;
 `;
 const Image = styled.img`
-  width: 120px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px 0 0 10px;
 `;
 const Details = styled.div`
   padding: 20px;
@@ -201,7 +205,7 @@ const Cart = () => {
                 <ProductDetail>
                   <ImgContainer>
                     <SLink to={"/produkt/" + product._id}>
-                      <Image src={product.img} />
+                      <Image src={product.images[0]} />
                     </SLink>
                   </ImgContainer>
                   <Details>
@@ -214,13 +218,16 @@ const Cart = () => {
                       </ProductName>
                     </SLink>
                     <ProductId>ID Produktu: {product._id}</ProductId>
+
+                    <ProductId>Kolor:</ProductId>
                     <ProductColor
                       color={
                         colors.find(
-                          (colorItem) => colorItem.id === product.color
+                          (colorItem) => colorItem.id == product.color
                         )?.colorCSS
                       }
                     />
+
                     {/* <ProductSize>
                       <b>Rozmiar:</b> {product.size}
                     </ProductSize> */}
@@ -229,12 +236,18 @@ const Cart = () => {
                 <PriceDetail>
                   <ProductAmountContainer>
                     <Remove
-                      sx={{ cursor: "pointer" }}
+                      sx={{
+                        cursor: "pointer",
+                        color: templateColors.BODY_COLOR_DARK,
+                      }}
                       onClick={() => handleRemove(product)}
                     />
                     <ProductAmount>{product.quantity}</ProductAmount>
                     <Add
-                      sx={{ cursor: "pointer" }}
+                      sx={{
+                        cursor: "pointer",
+                        color: templateColors.BODY_COLOR_DARK,
+                      }}
                       onClick={() => handleAdd(product)}
                     />
                   </ProductAmountContainer>
@@ -250,7 +263,10 @@ const Cart = () => {
                   </div>
                   <Delete
                     onClick={() => handleDelete(product)}
-                    sx={{ cursor: "pointer" }}
+                    sx={{
+                      cursor: "pointer",
+                      color: templateColors.BODY_COLOR_DARK,
+                    }}
                   />
                 </PriceDetail>
               </Product>

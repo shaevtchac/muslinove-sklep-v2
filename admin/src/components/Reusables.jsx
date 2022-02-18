@@ -45,3 +45,13 @@ export const EditInput = styled.input`
 export const Label = styled.label`
   font-size: 0.8rem;
 `;
+
+export const ColorDot = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: ${(props) => props.color};
+  margin: 0 5px;
+  cursor: pointer;
+  border: 0.5px solid lightgray;
+`;

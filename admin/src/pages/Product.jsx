@@ -1,20 +1,27 @@
-import styled from "styled-components";
-import { Button, Card, Img, Input, Label } from "../components/Reusables";
-import { Link, useLocation } from "react-router-dom";
-import Chart from "../components/Chart";
-import { productData } from "../dummyData";
 import { Publish } from "@material-ui/icons";
+import MuiAlert from "@mui/material/Alert";
+import Autocomplete from "@mui/material/Autocomplete";
+import InputAdornment from "@mui/material/InputAdornment";
+import Snackbar from "@mui/material/Snackbar";
+import Switch from "@mui/material/Switch";
+import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
+import { forwardRef, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useMemo, useState } from "react";
-import { userRequest } from "../requestMethods";
+import { Link, useLocation } from "react-router-dom";
 import { DefaultEditor } from "react-simple-wysiwyg";
 import sanitizeHtml from "sanitize-html";
+import styled from "styled-components";
+import Chart from "../components/Chart";
+import ProductSlider from "../components/ProductSlider";
+import { Button, Card, ColorDot, Img, Label } from "../components/Reusables";
+import { categories, colors } from "../data";
 import {
   removeProductPicture,
   updateProduct,
   uploadProductPicture,
 } from "../redux/apiCalls";
-import ProductSlider from "../components/ProductSlider";
+import { userRequest } from "../requestMethods";
 
 const Container = styled.div`
   flex: 4;
@@ -70,8 +77,18 @@ const ProductFormLeft = styled.div`
     margin-top: 5px;
   }
 `;
-const Select = styled.select`
-  max-width: 50px;
+
+const ColorPicker = styled.div`
+  display: none;
+  gap: 2px;
+  flex-wrap: wrap;
+`;
+const ColorPickerWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+  &:hover ${ColorPicker} {
+    display: flex;
+  }
 `;
 
 const ProductFormRight = styled.div`
@@ -94,26 +111,31 @@ const ProductUpload = styled.div`
 const ImgageList = styled.ol`
   margin-top: 1rem;
 `;
-const ImageListItem = styled.li`
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-`;
+const ImageListItem = styled.li``;
 const ImagelistButton = styled.button`
   border: none;
   background: teal;
   color: white;
-  font-weight: bold;
+  float: right;
+  margin-left: 1rem;
 `;
+
+const Alert = forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+//-------------------------------------------------------------------------------------------------------------------------------
 const Product = () => {
   const [pStats, setPStats] = useState([]);
-  const [inputs, setInputs] = useState({});
   const [html, setHtml] = useState("");
+  const [openSnackBar, setOpenSnackBar] = useState(false);
   const location = useLocation();
   const productId = location.pathname.split("/")[2];
   const product = useSelector((state) =>
     state.product.products.find((product) => product._id === productId)
   );
+  const error = useSelector((state) => state.product.error);
+  const isFetching = useSelector((state) => state.product.isFetching);
+  const [inputs, setInputs] = useState(product);
   const dispatch = useDispatch();
   const MONTHS = useMemo(
     () => [
@@ -132,9 +154,34 @@ const Product = () => {
     ],
     []
   );
+  const handleCloseSnackBar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackBar(false);
+  };
   const handleChangeInputs = (e) => {
     setInputs((prev) => {
+      // console.log(e.target.name, e.target.value);
       return { ...prev, [e.target.name]: e.target.value };
+    });
+  };
+  const handleChangeCategories = (event, value, reason) => {
+    // console.log(value, reason);
+    setInputs((prev) => {
+      return { ...prev, categories: value.map((item) => item.cat) };
+    });
+  };
+  const handleChangeInStock = (e) => {
+    setInputs((prev) => {
+      return { ...prev, inStock: e.target.checked };
+    });
+  };
+
+  const handleColorPickerClick = (color) => {
+    setInputs((prev) => {
+      return { ...prev, color };
     });
   };
   const handleDescChange = (e) => {
@@ -145,6 +192,7 @@ const Product = () => {
     const desc = sanitizeHtml(html);
     const product = { ...inputs, desc };
     updateProduct(productId, product, dispatch);
+    setOpenSnackBar(true);
   };
   const handleRemoveImageButtonClick = (e, imgNo) => {
     e.preventDefault();
@@ -177,7 +225,7 @@ const Product = () => {
   }, [productId, MONTHS]);
   useEffect(() => {
     setHtml(product.desc);
-    setInputs(product);
+    // setInputs(product);
   }, [product.desc, product]);
 
   // useEffect(() => {
@@ -219,33 +267,79 @@ const Product = () => {
       <Bottom>
         <ProductForm>
           <ProductFormLeft>
-            <Label>Nazwa Produktu:</Label>
-            <Input
+            <TextField
+              label="Nazwa Produktu:"
               type="text"
               name="title"
-              defaultValue={product.title}
+              value={inputs.title}
               onChange={handleChangeInputs}
             />
-            <Label>Cena:</Label>
-            <Input
+            <TextField
+              label="Cena"
               type="number"
               name="price"
-              defaultValue={product.price}
+              value={inputs.price}
               onChange={handleChangeInputs}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">zł</InputAdornment>
+                ),
+              }}
+              sx={{ width: "7rem", marginTop: "1rem" }}
             />
+            <Autocomplete
+              multiple
+              id="tags-outlined"
+              options={categories}
+              getOptionLabel={(option) => option.title}
+              value={categories.filter((cat) =>
+                inputs.categories?.includes(cat.cat)
+              )}
+              onChange={handleChangeCategories}
+              sx={{ marginTop: "1rem" }}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Kategorie:"
+                  placeholder="Wybierz kategorie produktu"
+                />
+              )}
+            />
+            <Label>Kolor:</Label>{" "}
+            <ColorPickerWrapper>
+              <ColorDot
+                color={colors.find((item) => item.id == inputs.color)?.colorCSS}
+              />
+              <ColorPicker>
+                {colors.map((item) => (
+                  <Tooltip key={item.id} title={item.name}>
+                    <ColorDot
+                      style={{ margin: "0" }}
+                      color={item.colorCSS}
+                      onClick={() => handleColorPickerClick(item.id)}
+                    />
+                  </Tooltip>
+                ))}
+              </ColorPicker>
+            </ColorPickerWrapper>
             <Label>Dostępny:</Label>
-            <Select name="inStock" id="idStock" onChange={handleChangeInputs}>
-              <option value="true">Tak</option>
-              <option value="false">Nie</option>
-            </Select>
+            <Switch
+              onChange={handleChangeInStock}
+              defaultChecked={product.inStock}
+            />
             <Label>Opis:</Label>
             <DefaultEditor
               value={html}
               name="desc"
               onChange={handleDescChange}
             />
-
-            <Button onClick={handleUpdateButtonClick}>Zapisz</Button>
+            <Button
+              onClick={handleUpdateButtonClick}
+              style={{ cursor: isFetching && "not-allowed" }}
+            >
+              Zapisz
+            </Button>
           </ProductFormLeft>
           <ProductFormRight>
             <ProductSliderContainer>
@@ -254,14 +348,13 @@ const Product = () => {
             <ImgageList>
               {product.images.map((imgSrc, index) => (
                 <ImageListItem key={imgSrc}>
-                  <span>{imgSrc} </span>
-                  <span>
-                    <ImagelistButton
-                      onClick={(e) => handleRemoveImageButtonClick(e, index)}
-                    >
-                      usuń
-                    </ImagelistButton>
-                  </span>
+                  {imgSrc}
+
+                  <ImagelistButton
+                    onClick={(e) => handleRemoveImageButtonClick(e, index)}
+                  >
+                    usuń
+                  </ImagelistButton>
                 </ImageListItem>
               ))}
             </ImgageList>
@@ -279,6 +372,19 @@ const Product = () => {
           </ProductFormRight>
         </ProductForm>
       </Bottom>
+      <Snackbar
+        open={openSnackBar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackBar}
+      >
+        <Alert
+          onClose={handleCloseSnackBar}
+          severity={error ? "error" : "success"}
+          sx={{ width: "100%" }}
+        >
+          {error ? "Nie udało się zapisać :(" : "Zapisane :)"}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

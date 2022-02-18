@@ -12,7 +12,7 @@ router.post("/upload", verifyTokenAndAdmin, function (req, res) {
 
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   image = req.files.image;
-  uploadPath = __dirname + "../../../admin/public/images/" + image.name;
+  uploadPath = __dirname + "../../admin/public/images/" + image.name;
 
   // Use the mv() method to place the file somewhere on your server
   image.mv(uploadPath, function (err) {
@@ -23,7 +23,7 @@ router.post("/upload", verifyTokenAndAdmin, function (req, res) {
 });
 
 router.post("/remove", verifyTokenAndAdmin, function (req, res) {
-  const path = __dirname + "../../../admin/public" + req.body.path;
+  const path = __dirname + "../../admin/public" + req.body.path;
 
   fs.unlink(path, (err) => {
     if (err) {

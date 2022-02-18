@@ -17,6 +17,7 @@ import ProductList from "./pages/ProductList";
 import NewProduct from "./pages/NewProduct";
 import Product from "./pages/Product";
 import Login from "./pages/Login";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -27,27 +28,27 @@ function App() {
   // const navigate = useNavigate();
   // if (localStorage.getItem("persist:root") === null) navigate("/logowanie");
   // console.log(localStorage.getItem("persist:root"));
-  const storage = localStorage.getItem("persist:root");
-  const admin = storage
-    ? JSON.parse(JSON.parse(localStorage.getItem("persist:root"))?.user)
-        .currentUser?.isAdmin
-    : null;
+  const user = useSelector((state) => state.user.currentUser);
+  const auth = user && user.isAdmin;
+  // const storage = localStorage.getItem("persist:root");
+  // const admin = storage
+  //   ? JSON.parse(JSON.parse(localStorage.getItem("persist:root"))?.user)
+  //       .currentUser?.isAdmin
+  //   : null;
 
   const PrivateRoute = () => {
-    const auth = admin; // determine if authorized, from context or however you're doing it
+    // determine if authorized, from context or however you're doing it
 
     // If authorized, return an outlet that will render child elements
     // If not, return element that will navigate to login page
     return auth ? <Outlet /> : <Navigate to="/logowanie" />;
   };
-  const LoginWrapper = ({ children, user }) => {
-    return user ? <Navigate to="/" replace /> : children;
-  };
+
   return (
     <Router>
-      {admin && <Topbar />}
+      {auth && <Topbar />}
       <Container>
-        {admin && <Sidebar />}
+        {auth && <Sidebar />}
         <Routes>
           <Route path="/" element={<PrivateRoute />}>
             <Route path="/" element={<Home />} />
@@ -58,14 +59,7 @@ function App() {
             <Route path="/produkt/:productId" element={<Product />} />
             <Route path="/nowy_produkt" element={<NewProduct />} />
           </Route>
-          <Route
-            path="/logowanie"
-            element={
-              // <LoginWrapper currentUser={admin}>
-              <Login />
-              // </LoginWrapper>
-            }
-          />
+          <Route path="/logowanie" element={<Login />} />
         </Routes>
       </Container>
     </Router>

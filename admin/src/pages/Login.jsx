@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Button, EditInput } from "../components/Reusables";
@@ -16,6 +17,7 @@ const Container = styled.div`
 `;
 
 const Login = () => {
+  const user = useSelector((state) => state.user.currentUser);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
@@ -24,8 +26,14 @@ const Login = () => {
   const handleClick = (e) => {
     e.preventDefault();
     login(dispatch, { email, password });
-    navigate("/", { replace: true });
+    navigate("/");
   };
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
   return (
     <Container>
       <h2>Panel administratora – logowanie</h2>

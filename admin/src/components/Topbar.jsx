@@ -2,6 +2,9 @@ import styled from "styled-components";
 import { NotificationsNone, Language, Settings } from "@material-ui/icons";
 import { Badge } from "@material-ui/core";
 import { SLink } from "./Reusables";
+import { useDispatch } from "react-redux";
+import { reset as userReset } from "../redux/userRedux";
+import { reset as productReset } from "../redux/productRedux";
 const Container = styled.nav`
   width: 100%;
   height: 50px;
@@ -37,8 +40,19 @@ const Avatar = styled.img`
   cursor: pointer;
   margin-left: 10px;
 `;
+const MenuItem = styled.span`
+  font-weight: 400;
+  font-size: 0.8rem;
+  cursor: pointer;
+`;
 
 const Topbar = () => {
+  const dispatch = useDispatch();
+  const handleLogoutClick = (e) => {
+    e.preventDefault();
+    dispatch(userReset());
+    dispatch(productReset());
+  };
   return (
     <Container>
       <Wrapper>
@@ -48,6 +62,7 @@ const Topbar = () => {
           </SLink>
         </Left>
         <Right>
+          <MenuItem onClick={(e) => handleLogoutClick(e)}>Wyloguj</MenuItem>
           <Language />
           <Settings />
           <Badge badgeContent={3} color="primary">

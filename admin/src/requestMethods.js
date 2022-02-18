@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/api/";
+const BASE_URL = "http://localhost:5000/api/"; //http://localhost:5000/api/  http://sklep.muslinove.pl/api/
 
 const storage = localStorage.getItem("persist:root");
 const localStorageUser = storage

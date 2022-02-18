@@ -28,6 +28,7 @@ export const login = async (dispatch, user) => {
     dispatch(loginSuccess(res.data));
   } catch (error) {
     dispatch(loginFailure());
+    console.error(error);
   }
 };
 export const getProducts = async (dispatch) => {
@@ -37,6 +38,7 @@ export const getProducts = async (dispatch) => {
     dispatch(getProductSuccess(res.data));
   } catch (error) {
     dispatch(getProductFailure());
+    console.error(error);
   }
 };
 export const deleteProduct = async (id, dispatch) => {
@@ -46,6 +48,7 @@ export const deleteProduct = async (id, dispatch) => {
     dispatch(deleteProductSuccess(id));
   } catch (error) {
     dispatch(deleteProductFailure());
+    console.error(error);
   }
 };
 export const updateProduct = async (id, product, dispatch) => {
@@ -55,6 +58,7 @@ export const updateProduct = async (id, product, dispatch) => {
     dispatch(updateProductSuccess(res.data));
   } catch (error) {
     dispatch(updateProductFailure());
+    console.error(error);
   }
 };
 export const uploadProductPicture = async (id, formData, images, dispatch) => {
@@ -91,5 +95,6 @@ export const addProduct = async (product, dispatch) => {
     dispatch(addProductSuccess(res.data));
   } catch (error) {
     dispatch(addProductFailure());
+    console.error(error);
   }
 };

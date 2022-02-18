@@ -2,9 +2,12 @@ import styled from "@emotion/styled/macro";
 import { useEffect, useState } from "react";
 import Product from "./Product";
 import { publicRequest } from "../requestMethods";
+import { Title } from "../Reusables/StyledParts";
 
 const Container = styled.div`
   padding: 0 1rem 1rem 1rem;
+`;
+const ProductWrap = styled.div`
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
@@ -53,11 +56,18 @@ const Products = ({ cat, filters, sort }) => {
 
   return (
     <Container>
-      {cat
-        ? filteredProducts.map((item) => <Product item={item} key={item._id} />)
-        : products
-            .slice(0, 4)
-            .map((item) => <Product item={item} key={item._id} />)}
+      <Title style={{ marginBottom: "1rem", textAlign: "center" }}>
+        Popularne Produkty
+      </Title>
+      <ProductWrap>
+        {cat
+          ? filteredProducts.map((item) => (
+              <Product item={item} key={item._id} />
+            ))
+          : products
+              .slice(0, 4)
+              .map((item) => <Product item={item} key={item._id} />)}
+      </ProductWrap>
     </Container>
   );
 };

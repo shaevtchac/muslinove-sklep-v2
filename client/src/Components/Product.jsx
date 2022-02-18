@@ -6,7 +6,7 @@ import {
   Close,
 } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as colors from "../Reusables/Constants/Colors";
 import { addProduct, decreaseQuantity } from "../redux/cartRedux";
 import Button from "@mui/material/Button";
@@ -73,17 +73,46 @@ const Icon = styled.div`
     transform: scale(1.1);
   }
 `;
+const TitlePriceContainer = styled.div`
+  background: linear-gradient(#00000000, #00000084);
+  width: 100%;
+  height: 100px;
+  position: absolute;
+  bottom: 0;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const ProductTitle = styled.div`
+  color: white;
+  font-weight: 600;
+  font-size: calc(0.9rem + 1vw);
+`;
+const ProductPrice = styled.div`
+  color: white;
+  font-size: calc(1rem + 1vw);
+  font-weight: 200;
+`;
 
 const Product = ({ item }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
-  const handleAddOneToCart = () => {
+  const handleClick = () => {
+    navigate(`/produkt/${item._id}`);
+  };
+  const handleAddOneToCart = (e) => {
+    e.stopPropagation();
     dispatch(addProduct({ ...item, quantity: 1 }));
     setOpenSnackBar(true);
   };
 
-  const handleRemoveOneFromCart = () => {
+  const handleRemoveOneFromCart = (e) => {
+    e.stopPropagation();
     dispatch(decreaseQuantity(item));
     handleCloseSnackBar();
   };
@@ -98,7 +127,11 @@ const Product = ({ item }) => {
 
   const action = (
     <>
-      <Button color="secondary" size="small" onClick={handleRemoveOneFromCart}>
+      <Button
+        color="secondary"
+        size="small"
+        onClick={(e) => handleRemoveOneFromCart(e)}
+      >
         COFNIJ
       </Button>
       <IconButton
@@ -116,18 +149,22 @@ const Product = ({ item }) => {
     <Container>
       <Circle />
       <Image src={item.images[0]} />
-      <Info>
+      <Info onClick={handleClick}>
         <Icon>
-          <ShoppingCartOutlined onClick={handleAddOneToCart} />
+          <ShoppingCartOutlined onClick={(e) => handleAddOneToCart(e)} />
         </Icon>
-        <Link to={`/produkt/${item._id}`}>
-          <Icon>
-            <SearchOutlined />
-          </Icon>
-        </Link>
+        {/* <Link to={`/produkt/${item._id}`}> */}
+        <Icon>
+          <SearchOutlined />
+        </Icon>
+        {/* </Link> */}
         <Icon>
           <FavoriteBorderOutlined />
         </Icon>
+        <TitlePriceContainer>
+          <ProductTitle>{item.title}</ProductTitle>{" "}
+          <ProductPrice>{item.price} zł</ProductPrice>
+        </TitlePriceContainer>
       </Info>
       <Snackbar
         open={openSnackBar}

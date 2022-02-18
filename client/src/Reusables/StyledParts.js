@@ -4,7 +4,7 @@ import * as colors from "./Constants/Colors";
 
 export const Title = styled.h1`
   font-weight: 700;
-  font-size: calc(0.7rem + 2vw);
+  font-size: calc(0.6rem + 2vw);
   text-transform: uppercase;
   line-height: 1.1;
   color: ${colors.TEXT_COLOR_LIGHT};

@@ -26,6 +26,7 @@ const Info = styled.div`
 `;
 const Title = styled.h1`
   color: white;
+  font-size: calc(0.9rem + 1vw);
   margin-bottom: 20px;
   text-shadow: 0px 0px 10px black;
 `;

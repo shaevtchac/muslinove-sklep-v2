@@ -29,8 +29,8 @@ const Img2 = styled(Image)`
 const STitle = styled(Title)`
   position: absolute;
   text-align: right;
-  right: 6%;
-  bottom: 10%;
+  right: 4%;
+  bottom: 15%;
   width: 30%;
 `;
 

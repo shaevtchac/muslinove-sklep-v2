@@ -95,6 +95,11 @@ export const productSlice = createSlice({
       state.isFetching = false;
       state.error = true;
     },
+    reset: (state) => {
+      state.products = [];
+      state.isFetching = false;
+      state.error = false;
+    },
   },
 });
 
@@ -117,5 +122,6 @@ export const {
   removeProductPictureStart,
   removeProductPictureSuccess,
   removeProductPictureFailure,
+  reset,
 } = productSlice.actions;
 export default productSlice.reducer;

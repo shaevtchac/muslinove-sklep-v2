@@ -45,7 +45,7 @@ const FeaturedInfo = () => {
         const res = await userRequest("orders/income");
         setIncome(res.data);
         setPerc((res.data[2].total * 100) / res.data[1].total - 100);
-        //TODO: callculation not correct on year chamge monts (dec - jan) correct it
+        //FIXME: callculation not correct on year chamge monts (dec - jan) correct it
       } catch (error) {
         console.log(error);
       }

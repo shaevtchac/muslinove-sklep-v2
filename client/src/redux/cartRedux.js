@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+//TODO: wyczyścić koszyk i zapisać w db przy wylogowaniu
 const cartSlice = createSlice({
   name: "cart",
   initialState: {

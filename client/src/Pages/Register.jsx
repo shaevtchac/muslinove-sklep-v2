@@ -1,13 +1,13 @@
 import styled from "@emotion/styled";
-import { Title, Button } from "../Reusables/StyledParts";
-import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import TextField from "@mui/material/TextField";
 import { useDispatch } from "react-redux";
-import { register } from "../redux/apiCalls";
+import { useNavigate } from "react-router-dom";
 import isEmail from "validator/es/lib/isEmail";
+import { Form, useForm } from "../Components/useForm";
+import { register } from "../redux/apiCalls";
+import { Button, Title, Input } from "../Reusables/StyledParts";
 
 const Container = styled.div`
   width: 100wv;
@@ -30,45 +30,64 @@ const Agreement = styled.div`
 `;
 
 const Register = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [emailHelperText, setEmailHelperText] = useState("");
-  const [emailError, setEmailError] = useState(false);
-  const [password, setPassword] = useState("");
-  const [passwordHelperText, setPasswordHelperText] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [postalCode, setPostalCode] = useState("");
-  const [city, setCity] = useState("");
-  const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
+  const inputsInitialState = {
+    email: "",
+    password: "",
+    confirmPassword: "",
+    name: "",
+    postalCode: "",
+    city: "",
+    address: "",
+    phone: "",
+  };
+  const formValidatedOk = (inputValues = inputs) => {
+    let temp = { ...errors };
+
+    if ("email" in inputValues)
+      temp.email = inputValues.email
+        ? isEmail(inputValues.email)
+          ? ""
+          : "Nieprawidłowy adres e-mail."
+        : "Pole wymagane.";
+    if ("password" in inputValues)
+      temp.password =
+        inputValues.password.length > 7
+          ? ""
+          : "Hasło musi mieć conajmniej 8 znaków";
+    if ("confirmPassword" in inputValues)
+      temp.confirmPassword =
+        inputValues.confirmPassword.length > 7
+          ? ""
+          : "Hasło musi mieć conajmniej 8 znaków";
+
+    if (inputValues == inputs) {
+      if (inputValues.password === inputValues.confirmPassword) {
+        temp.password = temp.confirmPassword = "";
+      } else {
+        temp.password = temp.confirmPassword = "Hasła muszą być takie same";
+      }
+    }
+    setErrors({ ...temp });
+    if (inputValues == inputs) return Object.values(temp).every((x) => x == "");
+  };
+  const { inputs, setInputs, errors, setErrors, handleInputChange, resetForm } =
+    useForm(inputsInitialState, true, formValidatedOk);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleCreateButtonClick = (e) => {
-    let user = {};
-    e.preventDefault();
-    if (name !== "") user.name = name;
-    if (isEmail(email)) {
-      user.email = email;
-    } else {
-      setEmailHelperText("Wpisz prawidłowy adres e-mail");
-      setEmailError(true);
-    }
-    if (password !== confirmPassword) {
-      setPasswordError(true);
-      setPasswordHelperText("Wpisane hasła muszą być jednakowe.");
-    } else if (password.length < 8) {
-      setPasswordError(true);
-      setPasswordHelperText("Hasło musi mieć conajmniej 8 znaków");
-    } else user.password = password;
-    if (postalCode !== "") user.postalCode = postalCode;
-    if (city !== "") user.city = city;
-    if (address !== "") user.address = address;
-    if (phone !== "") user.phone = phone;
 
-    if (emailError || passwordError) {
-      return;
-    } else {
+  const handleCreateButtonClick = (e) => {
+    e.preventDefault();
+    const user = {
+      email: inputs.email,
+      password: inputs.password,
+      ...(inputs.name && { name: inputs.name }),
+      ...(inputs.city && { city: inputs.city }),
+      ...(inputs.address && { address: inputs.address }),
+      ...(inputs.postalCode && { postalCode: inputs.postalCode }),
+      ...(inputs.phone && { phone: inputs.phone }),
+    };
+
+    if (formValidatedOk()) {
       register(dispatch, user);
       navigate("/logowanie");
     }
@@ -76,8 +95,7 @@ const Register = () => {
   return (
     <Container>
       <Title>Utwórz konto</Title>
-      <Box
-        component="form"
+      <Form
         sx={{
           width: {
             sm: "90%",
@@ -96,44 +114,41 @@ const Register = () => {
           },
           justifyContent: "center",
         }}
-        noValidate
-        autoComplete="off"
       >
-        <TextField
-          id="name"
+        <Input
+          name="name"
           label="imię i nazwisko"
-          // defaultValue="Hello World"
-          onChange={(e) => setName(e.target.value)}
+          value={inputs.name}
+          error={errors.name}
+          onChange={handleInputChange}
         />
-        <TextField
+        <Input
           required
-          id="email"
+          name="email"
           label="e-mail"
-          error={emailError}
-          helperText={emailHelperText}
-          onChange={(e) => setEmail(e.target.value)}
+          value={inputs.email}
+          error={errors.email}
+          onChange={handleInputChange}
           // defaultValue="Hello World"
         />
 
-        <TextField
+        <Input
           required
-          id="password"
+          name="password"
           label="hasło"
           type="password"
-          error={passwordError}
-          helperText={passwordHelperText}
-          onChange={(e) => setPassword(e.target.value)}
-          autoComplete="current-password"
+          value={inputs.password}
+          error={errors.password}
+          onChange={handleInputChange}
         />
-        <TextField
+        <Input
           required
-          id="confirm-password"
+          name="confirmPassword"
           label="powtórz hasło"
           type="password"
-          error={passwordError}
-          helperText={passwordHelperText}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          autoComplete="current-password"
+          value={inputs.confirmPassword}
+          error={errors.confirmPassword}
+          onChange={handleInputChange}
         />
         <Divider
           textAlign="left"
@@ -145,28 +160,30 @@ const Register = () => {
         >
           ADRES (do wysyłki)
         </Divider>
-        <TextField
-          id="postal-code"
+        <Input
+          name="postalCode"
           label="kod pocztowy"
-          onChange={(e) => setPostalCode(e.target.value)}
-          // defaultValue="Hello World"
+          value={inputs.postalCode}
+          onChange={handleInputChange}
         />
-        <TextField
-          id="city"
+        <Input
+          name="city"
           label="miejscowość"
-          onChange={(e) => setCity(e.target.value)}
-          // defaultValue="Hello World"
+          value={inputs.city}
+          onChange={handleInputChange}
         />
-        <TextField
+        <Input
           id="address"
           label="ulica, nr domu"
-          onChange={(e) => setAddress(e.target.value)}
+          value={inputs.address}
+          onChange={handleInputChange}
           // defaultValue="Hello World"
         />
-        <TextField
-          id="phone"
+        <Input
+          name="phone"
           label="nr telefonu"
-          onChange={(e) => setPhone(e.target.value)}
+          value={inputs.phone}
+          onChange={handleInputChange}
           // defaultValue="Hello World"
         />
 
@@ -183,7 +200,7 @@ const Register = () => {
           </Agreement>
           <Button
             onClick={(e) => handleCreateButtonClick(e)}
-            type="filled"
+            filled
             style={{ float: "right" }}
           >
             UTWÓRZ
@@ -194,8 +211,14 @@ const Register = () => {
           >
             Anuluj
           </Button>
+          <Button
+            onClick={resetForm}
+            style={{ float: "right", marginRight: "1rem" }}
+          >
+            Wyczyść formularz
+          </Button>
         </Box>
-      </Box>
+      </Form>
     </Container>
   );
 };

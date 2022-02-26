@@ -20,6 +20,11 @@ mongoose
   .catch((err) => console.log(err));
 app.use(cors());
 app.use(fileUpload());
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 app.use(express.json());
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);

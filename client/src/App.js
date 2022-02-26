@@ -12,6 +12,7 @@ import Login from "./Pages/Login";
 import Product from "./Pages/Product";
 import ProductList from "./Pages/ProductList";
 import Register from "./Pages/Register";
+import OrderSummary from "./Pages/OrderSummary";
 
 function App() {
   const user = useSelector((state) => state.user.currentUser);
@@ -25,6 +26,7 @@ function App() {
         <Route path="/produkty/:category" element={<ProductList />} />
         <Route path="/produkt/:id" element={<Product />} />
         <Route path="/koszyk" element={<Cart />} />
+        <Route path="/podsumowanie" element={<OrderSummary />} />
         <Route
           path="/logowanie"
           element={

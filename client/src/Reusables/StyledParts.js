@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { TextField } from "@mui/material";
 import { Link } from "react-router-dom";
 import * as colors from "./Constants/Colors";
 
@@ -53,22 +54,17 @@ export const Button = styled.button`
   border-radius: 5px;
   cursor: pointer;
   border: ${(props) =>
-    props.type === "filled" ? "none" : "1px solid " + colors.BODY_COLOR_DARK};
+    props.filled ? "none" : "1px solid " + colors.BODY_COLOR_DARK};
   background-color: ${(props) =>
-    props.type === "filled"
-      ? colors.BODY_COLOR_DARK
-      : colors.WHITE_TRANSPARENT_50};
-  color: ${(props) =>
-    props.type === "filled" ? "white" : colors.BODY_COLOR_DARK};
+    props.filled ? colors.BODY_COLOR_DARK : colors.WHITE_TRANSPARENT_50};
+  color: ${(props) => (props.filled ? "white" : colors.BODY_COLOR_DARK)};
   -webkit-box-shadow: -1px 1px 4px 0px black;
   -moz-box-shadow: -1px 1px 4px 0px black;
   box-shadow: -1px 1px 4px 0px black;
   transition: 300ms ease-in;
   &:hover {
     background-color: ${(props) =>
-      props.type === "filled"
-        ? colors.TEXT_COLOR_DARK
-        : colors.WHITE_TRANSPARENT_70};
+      props.filled ? colors.TEXT_COLOR_DARK : colors.WHITE_TRANSPARENT_70};
   }
   &:disabled {
     color: gray;
@@ -81,3 +77,16 @@ export const SLink = styled(Link)`
   text-decoration: none;
   color: inherit;
 `;
+
+export function Input({ name, label, value, error, onChange, ...others }) {
+  return (
+    <TextField
+      name={name}
+      value={value}
+      label={label}
+      onChange={onChange}
+      {...(error && { error: true, helperText: error })}
+      {...others}
+    />
+  );
+}

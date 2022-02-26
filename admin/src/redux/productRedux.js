@@ -6,6 +6,7 @@ export const productSlice = createSlice({
     products: [],
     isFetching: false,
     error: false,
+    newProductId: null,
   },
   reducers: {
     //GET ALL_________________________________________________________________
@@ -86,10 +87,12 @@ export const productSlice = createSlice({
     addProductStart: (state) => {
       state.isFetching = true;
       state.error = false;
+      state.newProductId = null;
     },
     addProductSuccess: (state, action) => {
       state.isFetching = false;
       state.products.push(action.payload);
+      state.newProductId = action.payload._id;
     },
     addProductFailure: (state) => {
       state.isFetching = false;
@@ -99,6 +102,10 @@ export const productSlice = createSlice({
       state.products = [];
       state.isFetching = false;
       state.error = false;
+      state.newProductId = null;
+    },
+    resetNewProductId: (state) => {
+      state.newProductId = null;
     },
   },
 });
@@ -123,5 +130,6 @@ export const {
   removeProductPictureSuccess,
   removeProductPictureFailure,
   reset,
+  resetNewProductId,
 } = productSlice.actions;
 export default productSlice.reducer;

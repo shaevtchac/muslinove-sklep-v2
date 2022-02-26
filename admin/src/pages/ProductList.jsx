@@ -40,11 +40,11 @@ const ProductList = () => {
     deleteProduct(id, dispatch);
   };
   const columns = [
-    { field: "_id", headerName: "ID", width: 220 },
+    { field: "_id", headerName: "ID", width: 200 },
     {
       field: "product",
       headerName: "Nazwa ",
-      width: 200,
+      width: 400,
       renderCell: (params) => {
         return (
           <ProdName>
@@ -62,12 +62,7 @@ const ProductList = () => {
         return params.row.inStock ? "Tak" : "Nie";
       },
     },
-    {
-      field: "status",
-      headerName: "Status",
-      type: "number",
-      width: 120,
-    },
+
     {
       field: "price",
       headerName: "Cena",

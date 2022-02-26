@@ -8,7 +8,7 @@ import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import { forwardRef, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { DefaultEditor } from "react-simple-wysiwyg";
 import sanitizeHtml from "sanitize-html";
 import styled from "styled-components";
@@ -17,10 +17,12 @@ import ProductSlider from "../components/ProductSlider";
 import { Button, Card, ColorDot, Img, Label } from "../components/Reusables";
 import { categories, colors } from "../data";
 import {
+  addProduct,
   removeProductPicture,
   updateProduct,
   uploadProductPicture,
 } from "../redux/apiCalls";
+import { resetNewProductId } from "../redux/productRedux";
 import { userRequest } from "../requestMethods";
 
 const Container = styled.div`
@@ -130,9 +132,11 @@ const Product = () => {
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const location = useLocation();
   const productId = location.pathname.split("/")[2];
+  const navigate = useNavigate();
   const product = useSelector((state) =>
     state.product.products.find((product) => product._id === productId)
   );
+  const newProductId = useSelector((state) => state.product.newProductId);
   const error = useSelector((state) => state.product.error);
   const isFetching = useSelector((state) => state.product.isFetching);
   const [inputs, setInputs] = useState(product);
@@ -201,7 +205,12 @@ const Product = () => {
   const handleFileUpload = (e) => {
     let formData = new FormData();
     formData.append("image", e.target.files[0]);
+    formData.append("id", productId);
     uploadProductPicture(productId, formData, product.images, dispatch);
+  };
+  const handleCreateNewButtonClick = (e) => {
+    e.preventDefault();
+    addProduct({}, dispatch);
   };
 
   useEffect(() => {
@@ -225,20 +234,21 @@ const Product = () => {
   }, [productId, MONTHS]);
   useEffect(() => {
     setHtml(product.desc);
-    // setInputs(product);
   }, [product.desc, product]);
 
-  // useEffect(() => {
-  //   updateProduct(productId, { images }, dispatch);
-  // }, [images, productId, dispatch]);
+  useEffect(() => {
+    if (newProductId) {
+      navigate("/produkt/" + newProductId, { replace: true });
+      dispatch(resetNewProductId());
+      window.location.reload();
+    }
+  }, [newProductId, navigate, dispatch]);
 
   return (
     <Container>
       <TitleWrapper>
         <Title>Produkt</Title>
-        <Link to="/nowy_produkt">
-          <Button>Nowy</Button>
-        </Link>
+        <Button onClick={handleCreateNewButtonClick}>Nowy</Button>
       </TitleWrapper>
       <Top>
         <TopLeft>

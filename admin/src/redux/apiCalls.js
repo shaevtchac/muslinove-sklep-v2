@@ -1,4 +1,4 @@
-import { publicRequest, userRequest, userRequestFile } from "../requestMethods";
+import { publicRequest, userRequest, userRequestForm } from "../requestMethods";
 import {
   deleteProductFailure,
   deleteProductStart,
@@ -44,11 +44,18 @@ export const getProducts = async (dispatch) => {
 export const deleteProduct = async (id, dispatch) => {
   dispatch(deleteProductStart());
   try {
-    // const res = await userRequest.delete(`/products/${id}`);
-    dispatch(deleteProductSuccess(id));
-  } catch (error) {
+    const dbRes = await userRequest.delete(`/products/${id}`);
+    dispatch(deleteProductSuccess({ id }));
+    try {
+      const fsRes = await userRequest.post("/images/remove_dir", {
+        id: id,
+      });
+    } catch (fsError) {
+      console.error(fsError);
+    }
+  } catch (dbError) {
     dispatch(deleteProductFailure());
-    console.error(error);
+    console.error(dbError);
   }
 };
 export const updateProduct = async (id, product, dispatch) => {
@@ -65,8 +72,8 @@ export const uploadProductPicture = async (id, formData, images, dispatch) => {
   var updImages = images.slice();
   dispatch(uploadProductPictureStart());
   try {
-    const res = await userRequestFile.post("/images/upload", formData);
-    updImages.push(`/images/${res.data}`);
+    const res = await userRequestForm.post("/images/upload", formData);
+    updImages.push(`/images/${id}/${res.data}`);
     dispatch(uploadProductPictureSuccess({ id, images: updImages }));
     updateProduct(id, { images: updImages }, dispatch);
   } catch (error) {
@@ -91,10 +98,17 @@ export const removeProductPicture = async (id, images, imgNo, dispatch) => {
 export const addProduct = async (product, dispatch) => {
   dispatch(addProductStart());
   try {
-    const res = await userRequest.post(`/products`, product);
-    dispatch(addProductSuccess(res.data));
-  } catch (error) {
+    const databaseRes = await userRequest.post(`/products`, product);
+    dispatch(addProductSuccess(databaseRes.data));
+    try {
+      const fsRes = await userRequest.post("/images/create_dir", {
+        id: databaseRes.data._id,
+      });
+    } catch (fsError) {
+      console.error(fsError);
+    }
+  } catch (dbError) {
     dispatch(addProductFailure());
-    console.error(error);
+    console.error(dbError);
   }
 };

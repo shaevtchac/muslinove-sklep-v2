@@ -4,7 +4,6 @@ import { Add, Delete, Remove } from "@mui/icons-material";
 import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";
 import { colors } from "../data";
-import { publicRequest, tPayRequest } from "../requestMethods";
 import styled from "@emotion/styled";
 import * as templateColors from "../Reusables/Constants/Colors";
 import {
@@ -22,22 +21,6 @@ const Wrapper = styled.div`
   ${mobile({ padding: "10px" })}
 `;
 
-const Top = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 0;
-`;
-
-const TopTexts = styled.div`
-  ${mobile({ display: "none" })}
-`;
-const TopText = styled.span`
-  text-decoration: underline;
-  cursor: pointer;
-  margin: 0 10px;
-`;
-
 const Bottom = styled.div`
   display: flex;
   gap: 1rem;
@@ -46,9 +29,12 @@ const Bottom = styled.div`
 `;
 const Info = styled.div`
   flex: 3;
+  display: grid;
+  gap: 1rem;
 `;
 const STitle = styled(Title)`
   text-align: center;
+  margin-block: 1.5rem;
 `;
 const Product = styled.div`
   display: flex;
@@ -57,6 +43,7 @@ const Product = styled.div`
   border-radius: 10px;
   background-color: ${templateColors.WHITE_TRANSPARENT_50};
   border-bottom: 1px solid ${templateColors.BODY_COLOR_LIGHT};
+  height: min-content;
 `;
 const ImgContainer = styled.div`
   width: 120px;
@@ -123,6 +110,9 @@ const ProductPriceSmall = styled.div`
 `;
 const Summary = styled.div`
   flex: 1;
+  display: grid;
+  gap: 1rem;
+
   background-color: ${templateColors.WHITE_TRANSPARENT_50};
   border: 0.5px solid lightgray;
   border-radius: 10px;
@@ -130,46 +120,32 @@ const Summary = styled.div`
   height: min-content;
 `;
 
-const SummaryTitle = styled.h1`
-  font-weight: 400;
-  color: ${templateColors.TEXT_COLOR_DARK};
-`;
 const SummaryItem = styled.div`
-  margin: 30px 0;
   display: flex;
-  justify-content: space-between;
-  font-weight: ${(props) => props.type === "total" && "600"};
-  font-size: ${(props) => props.type === "total" && "1.5rem"};
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 1rem;
   color: ${templateColors.TEXT_COLOR_DARK};
 `;
 
-const SummaryItemText = styled.span``;
-const SummaryItemPrice = styled.span``;
+const SummaryItemText = styled.span`
+  text-align: right;
+`;
+const SummaryItemPrice = styled.span`
+  font-weight: 600;
+  font-size: 2rem;
+`;
+const EmptyCartInfo = styled.div`
+  font-size: 0.9rem;
+  color: ${templateColors.WHITE_TRANSPARENT_70};
+  text-align: center;
+  margin-top: 4rem;
+`;
 
 const Cart = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
-  const handleCheckout = () => {
-    const startPayment = async () => {
-      let tpaySecData;
-      try {
-        tpaySecData = await publicRequest.post("/tpay/md5", {
-          amount: cart.total,
-        }).data;
-      } catch (error) {
-        console.log(error);
-      }
 
-      // window.location.href =
-      //   "https://secure.tpay.com?id=" +
-      //   tpaySecData.tpayId +
-      //   "&amount=" +
-      //   cart.total +
-      //   "&description=transakcja testowa&group=110&name=Nazwa Klienta&email=email@klienta.com&accept_tos=1&md5sum=" +
-      //   tpaySecData.md5Sum;
-    };
-    startPayment();
-  };
   const handleDelete = (product) => {
     dispatch(removeProduct(product));
   };
@@ -188,18 +164,11 @@ const Cart = () => {
       <Navbar />
       <Wrapper>
         <STitle>Twój koszyk</STitle>
-        <Top>
-          <Link to="/">
-            <Button>KONTYNUUJ ZAKUPY</Button>
-          </Link>
-          <TopTexts>
-            <TopText>Koszyk {cart.itemsInCart}</TopText>
-            {/* <TopText>Ulubione (0)</TopText> */}
-          </TopTexts>
-          <Button onClick={handleEmpty}>OPRÓŻNIJ KOSZYK</Button>
-        </Top>
         <Bottom>
           <Info>
+            {cart.itemsInCart === 0 && (
+              <EmptyCartInfo>Twój koszyk jest pusty.</EmptyCartInfo>
+            )}
             {cart.products.map((product) => (
               <Product key={product._id}>
                 <ProductDetail>
@@ -273,29 +242,30 @@ const Cart = () => {
             ))}
           </Info>
           <Summary>
-            <SummaryTitle>Podsumowanie:</SummaryTitle>
             <SummaryItem>
-              <SummaryItemText>Wartość przedmiotów</SummaryItemText>
-              <SummaryItemPrice>{cart.total} zł</SummaryItemPrice>
-            </SummaryItem>
-            <SummaryItem>
-              <SummaryItemText>Dostawa</SummaryItemText>
-              <SummaryItemPrice>12 zł</SummaryItemPrice>
-            </SummaryItem>
-            <SummaryItem>
-              <SummaryItemText>Promocja na dostawę</SummaryItemText>
-              <SummaryItemPrice>-12 zł</SummaryItemPrice>
-            </SummaryItem>
-            <SummaryItem type="total">
               <SummaryItemText>Do zapłaty</SummaryItemText>
               <SummaryItemPrice>{cart.total} zł</SummaryItemPrice>
             </SummaryItem>
-            <Button
-              onClick={handleCheckout}
-              type="filled"
-              style={{ width: "100%" }}
-            >
-              DO KASY
+
+            <SummaryItemText style={{ marginTop: "-0.8rem" }}>
+              + dostawa
+            </SummaryItemText>
+
+            <Link to="/podsumowanie">
+              <Button
+                filled
+                style={{ width: "100%" }}
+                disabled={cart.total === 0}
+              >
+                DOSTAWA I PŁATNOŚĆ
+              </Button>
+            </Link>
+            <Link to="/">
+              <Button style={{ width: "100%" }}>KONTYNUUJ ZAKUPY</Button>
+            </Link>
+
+            <Button onClick={handleEmpty} style={{ width: "100%" }}>
+              OPRÓŻNIJ KOSZYK
             </Button>
           </Summary>
         </Bottom>

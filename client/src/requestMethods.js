@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const BASE_URL = "https://sklep.muslinove.pl/api/"; //"http://localhost:5000/api/"; "https://sklep.muslinove.pl/api/"
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://sklep.muslinove.pl/api/"
+    : "http://localhost:5000/api/";
 
 const storage = localStorage.getItem("persist:root");
 const localStorageUser = storage

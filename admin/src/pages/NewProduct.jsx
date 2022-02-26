@@ -48,7 +48,7 @@ const NewProduct = () => {
   };
   const handleCreateButtonClick = (e) => {
     e.preventDefault();
-    const fileName = new Date().getTime() + file.name;
+    // const fileName = new Date().getTime() + file.name;
   };
 
   return (

@@ -135,6 +135,13 @@ const Cart = () => {
 
   const deliveryFee = 20;
 
+  const storeInputsAndOrderIdInlocalStore = (orderId) => {
+    for (const propName in inputs) {
+      localStorage.setItem(propName, inputs[propName]);
+    }
+    localStorage.setItem("orderId", orderId);
+  };
+
   const formValidatedOk = (inputValues = inputs) => {
     let temp = { ...errors };
     if ("name" in inputValues)
@@ -158,58 +165,62 @@ const Cart = () => {
   const { inputs, setInputs, errors, setErrors, handleInputChange, resetForm } =
     useForm(inputsInitialState, true, formValidatedOk);
 
-  const handleCheckout = (e) => {
+  const handleCheckout = async (e) => {
     e.preventDefault();
-    let userId;
-    if (user) {
-      userId = user._id;
-    } else {
-      userId = "niezarejestrowany";
-    }
 
+    if (!formValidatedOk()) return;
     let order = {
-      userId,
-      amount: cart.total,
-      ...(user?.address && { address: user.address }), //add address if it exists
-      ...(user?.postalCode && { postalCode: user.postalCode }),
-      ...(user?.city && { city: user.city }),
+      ...(user ? { userId: user._id } : { userId: "niezarejestrowany" }),
+      amount: cart.total + deliveryFee,
+      address: inputs.address,
+      postalCode: inputs.postalCode,
+      city: inputs.city,
       products: cart.products,
     };
-    const encodeGetParams = (p) =>
-      Object.entries(p)
+    const encodeGetParams = (params) =>
+      Object.entries(params)
         .map((kv) => kv.map(encodeURIComponent).join("="))
         .join("&");
-    const getOrderId = publicRequest.post("/orders", order); //promise
-    if (!formValidatedOk()) return;
-    getOrderId
-      .then((dbRes) => {
-        const getTpaySecData = publicRequest.post("/tpay/md5", {
-          //promise
-          amount: cart.total + deliveryFee,
-          crc: dbRes.data._id,
+
+    try {
+      const dbRes = await publicRequest.post("/orders", order);
+      try {
+        const tpayRes = await publicRequest.post("/tpay/md5", {
+          amount: (cart.total + deliveryFee).toFixed(2),
+          crc: dbRes.data._doc._id,
         });
-        getTpaySecData
-          .then((tpayRes) => {
-            let params = {
-              id: tpayRes.data.tpayId,
-              md5sum: tpayRes.data.md5Sum,
-              amount: cart.total + deliveryFee,
-              crc: dbRes.data._id,
-              description: `zamówienie nr: ${dbRes.data._id} w sklepie muslinove.pl`,
-              name: inputs.name,
-              email: inputs.email,
-              address: inputs.address,
-              zip: inputs.postalCode,
-              ...(inputs.phone && { phone: inputs.phone }),
-            };
-            console.log(params);
-            dispatch(emptyCart());
-            window.location.href =
-              "https://secure.tpay.com?" + encodeGetParams(params);
-          })
-          .catch((tpayErr) => console.error(tpayErr));
-      })
-      .catch((dbErr) => console.error(dbErr));
+        if (dbRes.data.orderToken)
+          localStorage.orderToken = dbRes.data.orderToken;
+
+        let params = {
+          id: tpayRes.data.tpayId,
+          md5sum: tpayRes.data.md5Sum,
+          amount: (cart.total + deliveryFee).toFixed(2),
+          crc: dbRes.data._doc._id,
+          description: `zamówienie nr: ${dbRes.data._doc._id} w sklepie muslinove.pl`,
+          name: inputs.name,
+          email: inputs.email,
+          address: inputs.address,
+          return_url:
+            process.env.NODE_ENV === "production"
+              ? "https://sklep.muslinove.pl/platnosc_ok"
+              : "http://localhost:3000/platnosc_ok",
+          zip: inputs.postalCode,
+          ...(inputs.phone && { phone: inputs.phone }),
+        };
+        // dispatch(emptyCart());
+        //temp data storage for unregistered users
+        storeInputsAndOrderIdInlocalStore(dbRes.data._doc._id);
+        window.location.href =
+          "https://secure.tpay.com?" + encodeGetParams(params);
+      } catch (tpayResError) {
+        console.error("Problem z uzyskaniem sumy kontrolnej");
+        console.error(tpayResError);
+      }
+    } catch (dbResError) {
+      console.error("Problem z utworzeniem nowego zamówienia");
+      console.error(dbResError);
+    }
   };
   useEffect(() => {
     if (user !== null) {
@@ -247,7 +258,7 @@ const Cart = () => {
                 </ProductDetail>
                 <PriceDetail>
                   <ProductPrice>
-                    {product.price * product.quantity} zł
+                    {(product.price * product.quantity).toFixed(2)} zł
                   </ProductPrice>
                 </PriceDetail>
               </Product>
@@ -258,7 +269,7 @@ const Cart = () => {
               <SummaryTitle>Podsumowanie:</SummaryTitle>
               <SummaryItem>
                 <SummaryItemText>Wartość przedmiotów</SummaryItemText>
-                <SummaryItemPrice>{cart.total} zł</SummaryItemPrice>
+                <SummaryItemPrice>{cart.total.toFixed(2)} zł</SummaryItemPrice>
               </SummaryItem>
               <SummaryItem>
                 <SummaryItemText>Dostawa (kurier)</SummaryItemText>
@@ -267,7 +278,7 @@ const Cart = () => {
               <SummaryItem type="total">
                 <SummaryItemText>Do zapłaty</SummaryItemText>
                 <SummaryItemPrice>
-                  {cart.total + deliveryFee} zł
+                  {(cart.total + deliveryFee).toFixed(2)} zł
                 </SummaryItemPrice>
               </SummaryItem>
             </SummaryPayment>
@@ -348,7 +359,7 @@ const Cart = () => {
                 style={{ width: "100%" }}
                 disabled={cart.total === 0}
               >
-                DO KASY
+                ZAPŁAĆ {(cart.total + deliveryFee).toFixed(2)} ZŁ
               </Button>
             </Form>
           </Summary>

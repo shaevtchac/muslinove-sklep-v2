@@ -10,8 +10,7 @@ const verifyToken = (req, res, next) => {
       next();
     });
   } else {
-    return res.status(401).json("Błędne dane logowania! (token)");
-    //TODO: usunąć token z komunikatu w wersji prod
+    return res.status(401).json("Brak tokenu");
   }
 };
 
@@ -30,13 +29,28 @@ const verifyTokenAndAdmin = (req, res, next) => {
     if (req.user.isAdmin) {
       next();
     } else {
-      res.status(403).json("Operacja niedozwolona.(noAdmina)");
+      res.status(403).json("Brak uprawnień (admin)");
       //TODO: usunąć admin w wer prod
     }
   });
+};
+
+const verifyOrderIdToken = (req, res, next) => {
+  const authHeader = req.headers.token;
+  if (authHeader) {
+    const token = authHeader.split(" ")[1];
+    jwt.verify(token, process.env.JWT_SEC, (err, order) => {
+      if (err) res.status(403).json("Nieprawidłowy token!");
+      req.order = order;
+      next();
+    });
+  } else {
+    return res.status(401).json("Brak tokenu");
+  }
 };
 module.exports = {
   verifyToken,
   verifyTokenAndAuthorization,
   verifyTokenAndAdmin,
+  verifyOrderIdToken,
 };

@@ -12,7 +12,9 @@ import Login from "./Pages/Login";
 import Product from "./Pages/Product";
 import ProductList from "./Pages/ProductList";
 import Register from "./Pages/Register";
+import Success from "./Pages/Success";
 import OrderSummary from "./Pages/OrderSummary";
+import Orders from "./Pages/Orders";
 
 function App() {
   const user = useSelector((state) => state.user.currentUser);
@@ -27,6 +29,8 @@ function App() {
         <Route path="/produkt/:id" element={<Product />} />
         <Route path="/koszyk" element={<Cart />} />
         <Route path="/podsumowanie" element={<OrderSummary />} />
+        <Route path="/platnosc_ok" element={<Success />} />
+        <Route path="/zamowienia" element={<Orders />} />
         <Route
           path="/logowanie"
           element={

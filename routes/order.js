@@ -4,6 +4,7 @@ const {
   verifyTokenAndAdmin,
   verifyTokenAndAuthorization,
 } = require("./verifyToken");
+const jwt = require("jsonwebtoken");
 
 const router = require("express").Router();
 
@@ -11,10 +12,20 @@ const router = require("express").Router();
 
 router.post("/", async (req, res) => {
   const newOrder = new Order(req.body);
-
+  var orderToken = "";
   try {
     const savedOrder = await newOrder.save();
-    res.status(200).json(savedOrder);
+    // token to allow assign the order to the new user if he/she decides to register afterwards (15mins to do it)
+    if (newOrder.userId === "niezarejestrowany") {
+      orderToken = jwt.sign(
+        {
+          orderId: savedOrder.id,
+        },
+        process.env.JWT_SEC,
+        { expiresIn: "15m" }
+      );
+    }
+    res.status(200).json({ ...savedOrder, orderToken });
   } catch (error) {
     res.status(500).json(error);
   }

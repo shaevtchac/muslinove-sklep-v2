@@ -14,7 +14,12 @@ const OrderSchema = new mongoose.Schema(
         },
       },
     ],
-    amount: { type: Number, required: true },
+    amount: {
+      type: Number,
+      get: (v) => (v / 100).toFixed(2),
+      set: (v) => v * 100,
+      required: true,
+    },
     address: { type: Object },
     postalCode: {
       type: String,
@@ -24,7 +29,7 @@ const OrderSchema = new mongoose.Schema(
     },
     status: { type: String, default: "pending" },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { getters: true } }
 );
 
 module.exports = mongoose.model("Order", OrderSchema);

@@ -1,7 +1,9 @@
 const router = require("express").Router();
 const User = require("../models/User");
+const Order = require("../models/Order");
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
+const { verifyOrderIdToken } = require("./verifyToken");
 
 //Register__________________________________________________________________________________
 router.post("/register", async (req, res) => {
@@ -45,6 +47,18 @@ router.post("/login", async (req, res) => {
     res.status(200).json({ ...others, accessToken });
   } catch (error) {
     res.status(500).json(error);
+  }
+});
+//update unregistered order
+router.put("/:orderId", verifyOrderIdToken, async (req, res) => {
+  try {
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.orderId,
+      req.body
+    );
+    res.status(200).json("Order updated");
+  } catch (error) {
+    console.error(error);
   }
 });
 

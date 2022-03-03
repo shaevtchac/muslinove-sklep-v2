@@ -14,6 +14,7 @@ const TOKEN = localStorageUser
   ? JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
       .currentUser.accessToken
   : "";
+const ORDER_TOKEN = localStorage.orderToken;
 
 export const publicRequest = axios.create({
   baseURL: BASE_URL,
@@ -22,6 +23,11 @@ export const publicRequest = axios.create({
 export const userRequest = axios.create({
   baseURL: BASE_URL,
   headers: { token: `Bearer ${TOKEN}` },
+});
+
+export const unregisteredOrderUpdateRequest = axios.create({
+  baseURL: BASE_URL,
+  headers: { token: `Bearer ${ORDER_TOKEN}` },
 });
 
 export const tPayRequest = axios.create({

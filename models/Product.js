@@ -7,10 +7,15 @@ const ProductSchema = new mongoose.Schema(
     images: { type: Array },
     categories: { type: Array },
     color: { type: String },
-    price: { type: Number, default: 999 },
+    price: {
+      type: Number,
+      default: 999,
+      get: (v) => (v / 100).toFixed(2),
+      set: (v) => v * 100,
+    },
     inStock: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { getters: true } }
 );
 
 module.exports = mongoose.model("Product", ProductSchema);

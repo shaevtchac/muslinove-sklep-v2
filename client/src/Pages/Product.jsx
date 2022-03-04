@@ -62,7 +62,6 @@ const FilterColor = styled.div`
   border-radius: 50%;
   background-color: ${(props) => props.color};
   margin: 0 5px;
-  cursor: pointer;
   border: 0.5px solid lightgray;
 `;
 // const FilterSize = styled.select`
@@ -144,16 +143,13 @@ const Product = () => {
           <FilterContainer>
             <Filter>
               <FilterTitle>Kolor</FilterTitle>
-              {product.color?.map((colorId) => (
-                <FilterColor
-                  onClick={() => setColor(colorId)}
-                  key={colorId}
-                  color={
-                    colors.find((colorItem) => colorItem.id === colorId)
-                      .colorCSS
-                  }
-                />
-              ))}
+
+              <FilterColor
+                color={
+                  colors.find((colorItem) => colorItem.id === product.color)
+                    ?.colorCSS
+                }
+              />
             </Filter>
             {/* <Filter>
               <FilterTitle>Rozmiar</FilterTitle>

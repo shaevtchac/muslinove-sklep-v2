@@ -66,7 +66,7 @@ const ContactItem = styled.div`
   align-items: center;
 `;
 const Payment = styled.img`
-  width: 50%;
+  width: 40%;
 `;
 
 const Footer = () => {
@@ -112,7 +112,9 @@ const Footer = () => {
           <MailOutline style={{ marginRight: "10px" }} />{" "}
           muslinove.drewno@interia.eu
         </ContactItem>
-        <Payment src="https://i.ibb.co/Qfvn4z6/payment.png" />
+        <a href="https://tpay.com/jak-to-dziala" target="_blank">
+          <Payment src="https://tpay.com/img/banners/tpay-full-300x203.svg" />
+        </a>
       </Right>
     </Container>
   );

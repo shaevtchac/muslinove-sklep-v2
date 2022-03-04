@@ -33,7 +33,7 @@ const cartSlice = createSlice({
       state.products[
         state.products.findIndex((item) => item._id === action.payload._id)
       ].quantity += 1;
-      state.total += action.payload.price;
+      state.total += parseFloat(action.payload.price);
     },
     decreaseQuantity: (state, action) => {
       let index = state.products.findIndex(
@@ -41,7 +41,7 @@ const cartSlice = createSlice({
       );
       if (state.products[index].quantity > 0) {
         state.products[index].quantity -= 1;
-        state.total -= action.payload.price;
+        state.total -= parseFloat(action.payload.price);
       }
       if (state.products[index].quantity === 0) {
         state.products.splice(index, 1);

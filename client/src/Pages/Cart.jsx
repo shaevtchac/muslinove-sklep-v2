@@ -222,7 +222,7 @@ const Cart = () => {
                   </ProductAmountContainer>
                   <div style={{ display: "grid", placeItems: "center" }}>
                     <ProductPrice>
-                      {product.price * product.quantity} zł
+                      {(product.price * product.quantity).toFixed(2)} zł
                     </ProductPrice>
                     {product.quantity > 1 && (
                       <ProductPriceSmall>
@@ -244,7 +244,7 @@ const Cart = () => {
           <Summary>
             <SummaryItem>
               <SummaryItemText>Do zapłaty</SummaryItemText>
-              <SummaryItemPrice>{cart.total} zł</SummaryItemPrice>
+              <SummaryItemPrice>{cart.total.toFixed(2)} zł</SummaryItemPrice>
             </SummaryItem>
 
             <SummaryItemText style={{ marginTop: "-0.8rem" }}>

@@ -57,7 +57,7 @@ export const Button = styled.button`
     props.filled ? "none" : "1px solid " + colors.BODY_COLOR_DARK};
   background-color: ${(props) =>
     props.filled ? colors.BODY_COLOR_DARK : colors.WHITE_TRANSPARENT_50};
-  color: ${(props) => (props.filled ? "white" : colors.BODY_COLOR_DARK)};
+  color: ${(props) => (props.filled ? "white" : colors.TEXT_COLOR_DARK)};
   -webkit-box-shadow: -1px 1px 4px 0px black;
   -moz-box-shadow: -1px 1px 4px 0px black;
   box-shadow: -1px 1px 4px 0px black;

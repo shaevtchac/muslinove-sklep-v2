@@ -61,7 +61,10 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
 router.get("/find/:userId", verifyTokenAndAuthorization, async (req, res) => {
   //user id not order id
   try {
-    const orders = await Order.find({ userID: req.params.userId });
+    const orders = await Order.find({ userId: req.params.userId }).populate(
+      "userId"
+    );
+
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json(error);

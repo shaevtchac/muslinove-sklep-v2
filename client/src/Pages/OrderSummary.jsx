@@ -170,12 +170,15 @@ const Cart = () => {
 
     if (!formValidatedOk()) return;
     let order = {
-      ...(user ? { userId: user._id } : { userId: "niezarejestrowany" }),
-      amount: cart.total + deliveryFee,
+      ...(user ? { user: user._id } : { user: "6228682b4ab3a9d1ab3b1a03" }),
+      amount: (cart.total + deliveryFee).toFixed(2),
+      name: inputs.name,
       address: inputs.address,
       postalCode: inputs.postalCode,
       city: inputs.city,
-      products: cart.products,
+      products: cart.products.map((entry) => {
+        return { quantity: entry.quantity, product: entry._id };
+      }),
     };
     const encodeGetParams = (params) =>
       Object.entries(params)
@@ -190,6 +193,7 @@ const Cart = () => {
           crc: dbRes.data._doc._id,
         });
         if (dbRes.data.orderToken)
+          //unregistered user order
           localStorage.orderToken = dbRes.data.orderToken;
 
         let params = {

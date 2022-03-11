@@ -220,7 +220,9 @@ const Cart = () => {
                       onClick={() => handleAdd(product)}
                     />
                   </ProductAmountContainer>
-                  <div style={{ display: "grid", placeItems: "center" }}>
+                  <div
+                    style={{ display: "grid", placeItems: "center", flex: 1 }}
+                  >
                     <ProductPrice>
                       {(product.price * product.quantity).toFixed(2)} zł
                     </ProductPrice>

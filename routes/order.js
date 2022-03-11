@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
   var orderToken = "";
   try {
     const savedOrder = await newOrder.save();
-    // token to allow assign the order to the new user if he/she decides to register afterwards (15mins to do it)
+    // token to allow assigning the order to the new user if he/she decides to register afterwards (15mins to do it)
     if (newOrder.userId === "niezarejestrowany") {
       orderToken = jwt.sign(
         {
@@ -61,9 +61,9 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
 router.get("/find/:userId", verifyTokenAndAuthorization, async (req, res) => {
   //user id not order id
   try {
-    const orders = await Order.find({ userId: req.params.userId }).populate(
-      "userId"
-    );
+    const orders = await Order.find({ user: req.params.userId }).populate({
+      path: "products.product",
+    });
 
     res.status(200).json(orders);
   } catch (error) {

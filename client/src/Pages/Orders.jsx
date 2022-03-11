@@ -6,7 +6,8 @@ import { mobile } from "../responsive";
 import { Button, Title } from "../Reusables/StyledParts";
 import * as templateColors from "../Reusables/Constants/Colors";
 import { useEffect, useState } from "react";
-import { userRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
+import { Link } from "react-router-dom";
 
 const STitle = styled(Title)`
   text-align: center;
@@ -76,65 +77,123 @@ const OrderTotal = styled.p`
   text-align: right;
 `;
 
+const formatDate = (DBdate) => {
+  const date = new window.Date(DBdate);
+  const options = {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  };
+  return new Intl.DateTimeFormat("pl-PL", options).format(date);
+};
+
 const Cart = () => {
-  const cart = useSelector((state) => state.cart);
   const user = useSelector((state) => state.user.currentUser);
   const [orders, setOrders] = useState([]);
-  const getOrders = async () => {
-    const res = await userRequest.get(`/orders/find/${user._id}`);
-    console.log(res.data);
+  const encodeGetParams = (params) =>
+    Object.entries(params)
+      .map((kv) => kv.map(encodeURIComponent).join("="))
+      .join("&");
+  const handlePayment = async (order) => {
+    try {
+      const tpayRes = await publicRequest.post("/tpay/md5", {
+        amount: order.amount,
+        crc: order._id,
+      });
+
+      let params = {
+        id: tpayRes.data.tpayId,
+        md5sum: tpayRes.data.md5Sum,
+        amount: order.amount,
+        crc: order._id,
+        description: `zamówienie nr: ${order._id} w sklepie muslinove.pl`,
+        name: order.name,
+        email: order.email,
+        address: order.address,
+        return_url:
+          process.env.NODE_ENV === "production"
+            ? "https://sklep.muslinove.pl/platnosc_ok"
+            : "http://localhost:3000/platnosc_ok",
+        zip: order.postalCode,
+      };
+
+      window.location.href =
+        "https://secure.tpay.com?" + encodeGetParams(params);
+    } catch (tpayResError) {
+      console.error("Problem z uzyskaniem sumy kontrolnej");
+      console.error(tpayResError);
+    }
+  };
+  const translateStatus = (status) => {
+    switch (status) {
+      case "paid":
+        return "Zapłacone - w trakcie przygotowania";
+      case "sent":
+        return "Wysłane";
+      case "pending":
+        return "Oczekuje na płatność";
+      case "chargeback":
+        return "Płatność zwrócona";
+      default:
+        return status;
+    }
   };
 
   useEffect(() => {
-    getOrders();
-  }, []);
+    const getOrders = async () => {
+      const res = await userRequest.get(`/orders/find/${user._id}`);
+      // console.log(res.data);
+      setOrders(res.data);
+    };
+    user && getOrders();
+  }, [user]);
 
   return (
     <>
       <Navbar />
       <STitle>Moje zamówienia</STitle>
       <Orders>
-        <Order>
-          <DateStatusInfo>
-            <Date>12 lut 2022 18:44</Date>
-            <OrderId>Id: 343fdfskdkjkj5kjfdjfsk4k453</OrderId>
-            <Status>Status: W trakcie realizacji</Status>
-          </DateStatusInfo>
-          <OrderLine>
-            <Image src="images/box120-1.jpg" />
-            <ProductName>Box średni zielony</ProductName>
-            <QtyPrice>2 x 80 zł</QtyPrice>
-            <LineTotal>160 zł</LineTotal>
-          </OrderLine>
-          <OrderLine>
-            <Image src="images/box120-1.jpg" />
-            <ProductName>Box mały zielony</ProductName>
-            <QtyPrice>1 x 40 zł</QtyPrice>
-            <LineTotal>40 zł</LineTotal>
-          </OrderLine>
-          <OrderTotal>200 zł</OrderTotal>
-        </Order>
-        <Order>
-          <DateStatusInfo>
-            <Date>12 lut 2022 18:44</Date>
-            <OrderId>Id: 343fdfskd3432432djfsk4k453</OrderId>
-            <Status>Status: Oczekuje na płatność</Status>
-            <Button onClick={getOrders}>Zapłać</Button>
-          </DateStatusInfo>
-          <OrderLine>
-            <Image src="images/box120-1.jpg" />
-            <ProductName>Box średni zielony</ProductName>
-            <QtyPrice>2 x 80 zł</QtyPrice>
-            <LineTotal>160 zł</LineTotal>
-          </OrderLine>
-          <OrderLine>
-            <Image src="images/box120-1.jpg" />
-            <ProductName>Box mały zielony</ProductName>
-            <QtyPrice>1 x 40 zł</QtyPrice>
-            <LineTotal>40 zł</LineTotal>
-          </OrderLine>
-          <OrderTotal>200 zł</OrderTotal>
-        </Order>
+        {orders.map((order) => (
+          <Order key={order.id}>
+            <DateStatusInfo>
+              <Date>{formatDate(order.createdAt)}</Date>
+              <OrderId>Id: {order.id}</OrderId>
+              <Status>
+                Status: {translateStatus(order.status)}{" "}
+                {order.status === "pending" && (
+                  <Button
+                    onClick={() => handlePayment(order)}
+                    style={{ marginLeft: "1rem" }}
+                  >
+                    Zapłać
+                  </Button>
+                )}
+              </Status>
+            </DateStatusInfo>
+            {order.products.map((line) => (
+              <OrderLine key={line.product._id}>
+                <Image src={line.product.images[1]} />
+                <ProductName>
+                  <Link to={`/produkt/${line.product._id}`}>
+                    {line.product.title}
+                  </Link>
+                </ProductName>
+                <QtyPrice>
+                  {line.quantity} x {line.product.price} zł
+                </QtyPrice>
+                <LineTotal>
+                  {(line.quantity * line.product.price).toFixed(2)} zł
+                </LineTotal>
+              </OrderLine>
+            ))}
+
+            <OrderTotal>{order.amount} zł</OrderTotal>
+          </Order>
+        ))}
       </Orders>
 
       <Footer />

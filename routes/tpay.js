@@ -80,6 +80,26 @@ router.post("/notifications", async (req, res) => {
     console.error(
       `Błąd powiadomień TPAY: Dane z płatności o numerze ${req.body.tr_id} niezgodne z zamówieniem`
     );
+    console.log(
+      "req.body.tr_crc:",
+      req.body.tr_crc,
+      "= order.id:",
+      order._id.toString(),
+      "parseFloat(req.body.tr_amount) * 100",
+      parseFloat(req.body.tr_amount) * 100,
+      "=order.amount",
+      order.amount,
+      "req.body.md5sum:",
+      req.body.md5sum,
+      "=calc md5:",
+      CryptoJS.MD5(
+        process.env.TPAY_CLIENT_ID +
+          req.body.tr_id +
+          req.body.tr_amount +
+          req.body.tr_crc +
+          process.env.TPAY_SECURITY_CODE
+      ).toString()
+    );
   }
 });
 

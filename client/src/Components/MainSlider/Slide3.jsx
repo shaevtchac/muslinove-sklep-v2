@@ -1,6 +1,7 @@
 import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Image, Slide } from "pure-react-carousel";
+import { mobile } from "../../responsive";
 import { TextCard, Title } from "../../Reusables/StyledParts";
 
 const Container = styled.div`
@@ -11,6 +12,7 @@ const Container = styled.div`
   gap: 1rem;
   height: 100%;
   width: 100%;
+  ${mobile({ padding: "0.5rem", display: "block" })}
 `;
 const bgShift = keyframes`
   from {
@@ -27,6 +29,7 @@ const Img1 = styled(Image)`
   height: 100%;
   object-fit: cover;
   animation: ${bgShift} 25s linear alternate infinite;
+  ${mobile({ height: "30% ", objectFit: "none", marginTop: "0.5rem" })}
 `;
 const STitle = styled(Title)`
   margin: 1rem 0;

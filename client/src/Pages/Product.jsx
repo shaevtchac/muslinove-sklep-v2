@@ -19,11 +19,12 @@ const Container = styled.div`
   gap: 1rem;
   align-items: center;
   display: flex;
-  ${mobile({ flexDirection: "column" })}
+  ${mobile({ flexDirection: "column", padding: "0.5rem", gap: "0.5rem" })}
 `;
 const SliderContainer = styled.div`
   width: 66%;
   position: relative;
+  ${mobile({ width: "100%" })}
 `;
 
 const InfoContainer = styled.div`
@@ -34,7 +35,7 @@ const InfoContainer = styled.div`
 const Desc = styled.div`
   margin: 20px 0;
   line-height: 1.7;
-  font-size: calc(0.8rem + 0.3vw);
+  font-size: calc(0.9rem + 0.2vw);
 `;
 const Price = styled.span`
   font-size: 2.5rem;
@@ -133,7 +134,7 @@ const Product = () => {
         </SliderContainer>
         {/* <Image src={product.img} /> */}
         <InfoContainer>
-          <Title>{product.title}</Title>
+          <Title style={{ textAlign: "center" }}>{product.title}</Title>
           <Desc>{product.desc && parse(product.desc)}</Desc>
 
           <Price>

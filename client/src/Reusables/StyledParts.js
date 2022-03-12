@@ -1,7 +1,11 @@
 import styled from "@emotion/styled";
+import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 import { TextField } from "@mui/material";
+import { ButtonBack, ButtonNext } from "pure-react-carousel";
 import { Link } from "react-router-dom";
+import { mobile } from "../responsive";
 import * as colors from "./Constants/Colors";
+import { css } from "@emotion/react";
 
 export const Title = styled.h1`
   font-weight: 700;
@@ -25,11 +29,12 @@ export const Card = styled.div`
 
 export const TextCard = styled(Card)`
   & p {
-    font-size: 1rem;
+    font-size: calc(0.55rem + 0.3vw);
     text-align: justify;
     margin-top: 0.75rem;
     font-weight: 400;
     line-height: 1.7;
+    ${mobile({ lineHeight: "1.5", marginTop: "0.4rem" })}
 
     color: ${colors.TEXT_COLOR_DARK};
     &:nth-of-type(1) {
@@ -38,9 +43,9 @@ export const TextCard = styled(Card)`
     }
 
     &:nth-of-type(2)::first-letter {
-      font-size: 5rem;
+      font-size: calc(3.5rem + 0.5vw);
       padding: 5px;
-      line-height: 2.5rem;
+      line-height: calc(1.5rem + 1vw);
       float: left;
       font-family: "Engagement";
       color: ${colors.BODY_COLOR_LIGHT};
@@ -88,5 +93,45 @@ export function Input({ name, label, value, error, onChange, ...others }) {
       {...(error && { error: true, helperText: error })}
       {...others}
     />
+  );
+}
+
+const navButtonStyle = css`
+  background-color: hsla(0, 0%, 100%, 0.5);
+  border: 0;
+  border-radius: 50%;
+  display: block;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: background-color 0.3s;
+  ${mobile({ width: "30px", height: "30px", padding: "9px" })}
+`;
+
+const SButtonBack = styled(ButtonBack)`
+  ${navButtonStyle}
+  left: 5px;
+`;
+const SButtonNext = styled(ButtonNext)`
+  ${navButtonStyle}
+  right: 5px;
+`;
+
+export function NiceButtonBack() {
+  return (
+    <SButtonBack>
+      <ArrowBackIosNew sx={{ fontSize: { xs: "small", sm: 24 } }} />
+    </SButtonBack>
+  );
+}
+
+export function NiceButtonNext() {
+  return (
+    <SButtonNext>
+      <ArrowForwardIos sx={{ fontSize: { xs: "small", sm: 24 } }} />
+    </SButtonNext>
   );
 }

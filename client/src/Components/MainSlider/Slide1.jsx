@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { Image, Slide } from "pure-react-carousel";
+import { mobile } from "../../responsive";
 import { TextCard, Title } from "../../Reusables/StyledParts";
 
 const Container = styled.div`
@@ -10,12 +11,14 @@ const Container = styled.div`
   gap: 1rem;
   height: 100%;
   width: 100%;
+  ${mobile({ padding: "0.5rem", gridTemplateColumns: "1fr" })}
 `;
 const Logo = styled.img`
   display: block;
   width: 60%;
   height: auto;
   margin: 0 auto 2rem auto;
+  ${mobile({ margin: "0.5rem auto 1rem auto", width: "50%" })}
 `;
 
 const Img1 = styled(Image)`

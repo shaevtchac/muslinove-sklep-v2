@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import Footer from "../Components/Footer";
 import Navbar from "../Components/Navbar";
 import { mobile } from "../responsive";
-import { Button, Title } from "../Reusables/StyledParts";
+import { Button, SLink, Title } from "../Reusables/StyledParts";
 import * as templateColors from "../Reusables/Constants/Colors";
 import { useEffect, useState } from "react";
 import { publicRequest, userRequest } from "../requestMethods";
-import { Link } from "react-router-dom";
 
 const STitle = styled(Title)`
   text-align: center;
@@ -18,6 +17,8 @@ const Orders = styled.div`
   gap: 1.5rem;
   max-width: 800px;
   margin: 1.5rem auto;
+  padding: 1rem;
+  ${mobile({ padding: "0.5rem" })}
 `;
 const Order = styled.div`
   padding: 1rem;
@@ -25,6 +26,7 @@ const Order = styled.div`
   gap: 1rem;
   background-color: ${templateColors.BODY_COLOR_DARK};
   border-radius: 10px;
+  ${mobile({ padding: "0.5rem", gap: "0.5rem" })}
 `;
 const DateStatusInfo = styled.div`
   display: flex;
@@ -32,6 +34,7 @@ const DateStatusInfo = styled.div`
   align-items: center;
   color: ${templateColors.TEXT_COLOR_LIGHT};
   font-size: 0.8rem;
+  ${mobile({ flexDirection: "column" })}
 `;
 const Date = styled.p``;
 const Status = styled.p`
@@ -53,22 +56,29 @@ const Image = styled.img`
   object-fit: contain;
   object-position: center center;
   border-radius: 10px 0 0 10px;
+  ${mobile({ width: "70px" })}
 `;
 
 const ProductName = styled.div`
   color: ${templateColors.TEXT_COLOR_DARK};
-  flex: 4;
+  flex: 2;
   font-weight: 600;
+  font-size: calc(0.7rem + 0.5vw);
   margin-inline: 1rem;
+  ${mobile({ marginInline: "0.5rem" })}
 `;
 const QtyPrice = styled.div`
   color: ${templateColors.TEXT_COLOR_MEDIUM};
   font-size: 0.8rem;
+  text-align: center;
   flex: 1;
 `;
 const LineTotal = styled.div`
   color: ${templateColors.TEXT_COLOR_DARK};
   margin-right: 1rem;
+  flex: 1;
+  text-align: right;
+  ${mobile({ marginRight: "0.5rem" })}
 `;
 const OrderTotal = styled.p`
   color: ${templateColors.TEXT_COLOR_LIGHT};
@@ -178,9 +188,9 @@ const Cart = () => {
               <OrderLine key={line.product._id}>
                 <Image src={line.product.images[1]} />
                 <ProductName>
-                  <Link to={`/produkt/${line.product._id}`}>
+                  <SLink to={`/produkt/${line.product._id}`}>
                     {line.product.title}
-                  </Link>
+                  </SLink>
                 </ProductName>
                 <QtyPrice>
                   {line.quantity} x {line.product.price} zł

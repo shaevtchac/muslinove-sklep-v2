@@ -13,10 +13,12 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import { useState } from "react";
+import { mobile } from "../responsive";
 
 const Info = styled.div`
   cursor: pointer;
   opacity: 0;
+  ${mobile({ opacity: "1" })}
   width: 100%;
   height: 100%;
   position: absolute;

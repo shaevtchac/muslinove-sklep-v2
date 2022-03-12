@@ -22,13 +22,14 @@ const Bottom = styled.div`
   display: flex;
   gap: 1rem;
   justify-content: space-between;
-  ${mobile({ flexDirection: "column" })}
+  ${mobile({ flexDirection: "column", gap: "0.5rem" })}
 `;
 const Info = styled.div`
   flex: 1;
   display: grid;
   gap: 1rem;
   height: min-content;
+  ${mobile({ gap: "0.5rem" })}
 `;
 const STitle = styled(Title)`
   text-align: center;
@@ -37,7 +38,6 @@ const STitle = styled(Title)`
 const Product = styled.div`
   display: flex;
   justify-content: space-between;
-  ${mobile({ flexDirection: "column" })}
   border-radius: 10px;
   background-color: ${templateColors.WHITE_TRANSPARENT_50};
   border-bottom: 1px solid ${templateColors.BODY_COLOR_LIGHT};
@@ -48,6 +48,7 @@ const ImgContainer = styled.div`
   height: 80px;
   background-color: ${templateColors.BODY_COLOR_DARK};
   border-radius: 10px 0 0 10px;
+  ${mobile({ width: "80px" })}
 `;
 const ProductDetail = styled.div`
   flex: 1;
@@ -96,6 +97,7 @@ const Summary = styled.div`
   border-radius: 10px;
   padding: 1.5rem;
   height: min-content;
+  ${mobile({ flexDirection: "column", gap: "0.5rem", padding: "0.5rem" })}
 `;
 
 const SummaryTitle = styled.h1`
@@ -212,6 +214,7 @@ const Cart = () => {
           zip: inputs.postalCode,
           ...(inputs.phone && { phone: inputs.phone }),
         };
+        //TODO: empty cart when order placed successfully
         // dispatch(emptyCart());
         //temp data storage for unregistered users
         storeInputsAndOrderIdInlocalStore(dbRes.data._doc._id);

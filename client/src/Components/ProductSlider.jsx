@@ -11,6 +11,7 @@ import "pure-react-carousel/dist/react-carousel.es.css";
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 import { SButtonNext, SButtonBack } from "./MainSlider/MainSlider";
 import styled from "@emotion/styled";
+import { NiceButtonBack, NiceButtonNext } from "../Reusables/StyledParts";
 
 const SDotGroup = styled(DotGroup)`
   position: absolute;
@@ -37,12 +38,9 @@ const ProductSlider = ({ imgSrcArray }) => {
         ))}
       </Slider>
       <SDotGroup dotNumbers />
-      <SButtonBack>
-        <ArrowBackIosNew />
-      </SButtonBack>
-      <SButtonNext>
-        <ArrowForwardIos />
-      </SButtonNext>
+      <NiceButtonBack />
+
+      <NiceButtonNext />
     </CarouselProvider>
   );
 };

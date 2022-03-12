@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 import {
   CarouselProvider,
   Slider,
@@ -9,6 +8,8 @@ import {
   DotGroup,
 } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
+import { mobile } from "../../responsive";
+import { NiceButtonBack, NiceButtonNext } from "../../Reusables/StyledParts";
 import Slide0 from "./Slide0";
 import Slide1 from "./Slide1";
 import Slide2 from "./Slide2";
@@ -21,13 +22,14 @@ const navButtonStyle = css`
   border: 0;
   border-radius: 50%;
   display: block;
+  width: 44px;
   height: 44px;
   padding: 10px;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   transition: background-color 0.3s;
-  width: 44px;
+  ${mobile({ width: "30px", height: "30px" })}
 `;
 
 export const SButtonBack = styled(ButtonBack)`
@@ -51,8 +53,8 @@ const MainSlider = () => {
   return (
     <Container>
       <CarouselProvider
-        naturalSlideWidth={16}
-        naturalSlideHeight={8}
+        naturalSlideWidth={window.innerWidth > 600 ? 16 : 8}
+        naturalSlideHeight={window.innerWidth > 600 ? 8 : 12}
         totalSlides={4}
         infinite={true}
         // isPlaying={true}
@@ -64,12 +66,8 @@ const MainSlider = () => {
           <Slide3 />
         </Slider>
         <SDotGroup dotNumbers />
-        <SButtonBack>
-          <ArrowBackIosNew />
-        </SButtonBack>
-        <SButtonNext>
-          <ArrowForwardIos />
-        </SButtonNext>
+        <NiceButtonBack />
+        <NiceButtonNext />
       </CarouselProvider>
     </Container>
   );

@@ -18,6 +18,11 @@ const phone = localStorage.phone;
 const address = localStorage.address;
 const orderId = localStorage.orderId;
 const orderToken = localStorage.orderToken;
+//TODO: clear local storage (except for token) on page load
+
+const Container = styled.div`
+  padding: 0.5rem;
+`;
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -88,102 +93,109 @@ const Success = () => {
   return (
     <>
       <Navbar />
-      <Grid container justifyContent="center" maxWidth="400px" margin="0 auto">
-        <Grid item>
-          <CreditScoreIcon
-            sx={{
-              fontSize: "100px",
-              color: templateColors.BODY_COLOR_DARK,
-            }}
-          />
-        </Grid>
-        <Grid item>
-          <Title style={{ textAlign: "center", margin: "1rem" }}>
-            Dziękujemy za płatność
-          </Title>
-        </Grid>
-        <Grid item>
-          <Card style={{ marginBottom: "2rem" }}>
-            <p>
-              Na adres <b>{email}</b> zostanie wysłana wiadomość ze szczegółami
-              transakcji.
-            </p>
-            <p>
-              Twoje zamówienie jest w trakcie przygotowania i zostanie wysłane
-              na adres:
-            </p>
-            <CenteredText>
-              <b>{name}</b>
-              <br />
-              {address}
-              <br />
-              {postalCode + " " + city}
-              <br />
-              <br />
-              Identyfikator zamówienia to: <b>{orderId} </b>
-            </CenteredText>
-            <ButtonContainer>
-              <Link to="/">
-                <Button>Strona główna</Button>
-              </Link>{" "}
-              <Link to="/zamowienia">
-                <Button disabled={!user} filled>
-                  Moje zamówienia
-                </Button>
-              </Link>
-            </ButtonContainer>
-            {!user && (
-              <>
-                <CenteredText>
-                  Wprowadzone dane zostaną utracone po opuszczeniu strony.
-                  Możesz je zachować na potrzeby przyszłych zamówień i utworzyć
-                  konto na ich podstawie.
-                </CenteredText>
-                <Button
-                  filled
-                  style={{ width: "100%" }}
-                  onClick={() => setFormVisible((prev) => !prev)}
-                >
-                  UTWÓRZ KONTO
-                </Button>
-              </>
-            )}
-            {formVisible && (
-              <>
-                <CenteredText>
-                  <b>login:</b> {localStorage.email}
-                </CenteredText>
-                <Form
-                  onSubmit={handleRegisterUser}
-                  sx={{ display: "grid", gap: "1rem", margin: "1rem" }}
-                >
-                  <Input
-                    name="password"
-                    value={inputs.password}
-                    label="hasło"
-                    onChange={handleInputChange}
-                    error={errors.password}
-                    required
-                    type="password"
-                  />
-                  <Input
-                    name="confirmPassword"
-                    value={inputs.confirmPassword}
-                    label="potwierdź hasło"
-                    onChange={handleInputChange}
-                    error={errors.confirmPassword}
-                    required
-                    type="password"
-                  />
-                  <Button type="submit" filled>
-                    OK
+      <Container>
+        <Grid
+          container
+          justifyContent="center"
+          maxWidth="400px"
+          margin="0 auto"
+        >
+          <Grid item>
+            <CreditScoreIcon
+              sx={{
+                fontSize: "100px",
+                color: templateColors.BODY_COLOR_DARK,
+              }}
+            />
+          </Grid>
+          <Grid item width="100%">
+            <Title style={{ textAlign: "center", margin: "1rem" }}>
+              Dziękujemy za płatność
+            </Title>
+          </Grid>
+          <Grid item>
+            <Card style={{ marginBottom: "2rem" }}>
+              <p>
+                Na adres <b>{email}</b> zostanie wysłana wiadomość ze
+                szczegółami transakcji.
+              </p>
+              <p>
+                Twoje zamówienie jest w trakcie przygotowania i zostanie wysłane
+                na adres:
+              </p>
+              <CenteredText>
+                <b>{name}</b>
+                <br />
+                {address}
+                <br />
+                {postalCode + " " + city}
+                <br />
+                <br />
+                Identyfikator zamówienia to: <b>{orderId} </b>
+              </CenteredText>
+              <ButtonContainer>
+                <Link to="/">
+                  <Button>Strona główna</Button>
+                </Link>{" "}
+                <Link to="/zamowienia">
+                  <Button disabled={!user} filled>
+                    Moje zamówienia
                   </Button>
-                </Form>
-              </>
-            )}
-          </Card>
+                </Link>
+              </ButtonContainer>
+              {!user && (
+                <>
+                  <CenteredText>
+                    Wprowadzone dane zostaną utracone po opuszczeniu strony.
+                    Możesz je zachować na potrzeby przyszłych zamówień i
+                    utworzyć konto na ich podstawie.
+                  </CenteredText>
+                  <Button
+                    filled
+                    style={{ width: "100%" }}
+                    onClick={() => setFormVisible((prev) => !prev)}
+                  >
+                    UTWÓRZ KONTO
+                  </Button>
+                </>
+              )}
+              {formVisible && (
+                <>
+                  <CenteredText>
+                    <b>login:</b> {localStorage.email}
+                  </CenteredText>
+                  <Form
+                    onSubmit={handleRegisterUser}
+                    sx={{ display: "grid", gap: "1rem", margin: "1rem" }}
+                  >
+                    <Input
+                      name="password"
+                      value={inputs.password}
+                      label="hasło"
+                      onChange={handleInputChange}
+                      error={errors.password}
+                      required
+                      type="password"
+                    />
+                    <Input
+                      name="confirmPassword"
+                      value={inputs.confirmPassword}
+                      label="potwierdź hasło"
+                      onChange={handleInputChange}
+                      error={errors.confirmPassword}
+                      required
+                      type="password"
+                    />
+                    <Button type="submit" filled>
+                      OK
+                    </Button>
+                  </Form>
+                </>
+              )}
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
+      </Container>
     </>
   );
 };

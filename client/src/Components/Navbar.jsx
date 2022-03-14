@@ -1,11 +1,14 @@
 import { Badge } from "@mui/material";
 import { Search, ShoppingCartOutlined } from "@mui/icons-material";
-import React from "react";
+import React, { useState } from "react";
 import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "@emotion/styled";
 import { logout } from "../redux/userRedux";
 import { SLink } from "../Reusables/StyledParts";
+import Avatar from "@mui/material/Avatar";
+import * as templateColors from "../Reusables/Constants/Colors";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 const Container = styled.nav`
   height: 60px;
@@ -19,7 +22,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  ${mobile({ padding: "10px" })}
+  ${mobile({ padding: "12px 18px" })}
 `;
 const Left = styled.div``;
 const Logo = styled.div`
@@ -30,12 +33,18 @@ const Center = styled.div``;
 const Right = styled.div`
   display: flex;
   align-items: center;
+  position: relative;
 `;
 const MenuItem = styled.div`
   font-size: 14px;
   cursor: pointer;
   margin-left: 25px;
   ${mobile({ fontSize: "12px", marginLeft: "10px" })}
+`;
+
+const AvatarMenuItem = styled(MenuItem)`
+  margin: 0;
+  text-align: center;
 `;
 // const Language = styled.div`
 //   font-size: 14px;
@@ -50,18 +59,57 @@ const MenuItem = styled.div`
 //   margin-left: 25px;
 //   padding: 5px;
 // `;
-// const Input = styled.input`
-//   border: none;
-//   ${mobile({ width: "50px" })}
-// `;
+
 const Navbar = () => {
   const itemsInCart = useSelector((state) => state.cart.itemsInCart);
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
+  const [avatarMenuVisible, setAvatarMenuVisible] = useState(false);
+
+  const AvatarMenu = styled.div`
+    width: 150px;
+    background-color: ${templateColors.WHITE_TRANSPARENT_70};
+    border-radius: 5px;
+    position: absolute;
+    top: 47px;
+    right: -17px;
+    padding: 0.5rem;
+    z-index: 1;
+    opacity: ${avatarMenuVisible ? 1 : 0};
+  `;
+
   const handleLogout = (e) => {
     e.preventDefault();
+    setAvatarMenuVisible(false);
     dispatch(logout());
   };
+  function stringToColor(string) {
+    let hash = 0;
+    let i;
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = "#";
+
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.substr(-2);
+    }
+    /* eslint-enable no-bitwise */
+    return color;
+  }
+
+  function stringAvatar(name) {
+    return {
+      sx: {
+        bgcolor: stringToColor(name),
+      },
+      children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+    };
+  }
   return (
     <Container>
       <Wrapper>
@@ -84,7 +132,27 @@ const Navbar = () => {
               <MenuItem>Logowanie</MenuItem>
             </SLink>
           )}
-          {user && <MenuItem onClick={handleLogout}>Wyloguj</MenuItem>}
+
+          <ClickAwayListener onClickAway={() => setAvatarMenuVisible(false)}>
+            <div>
+              {user && (
+                <Avatar
+                  {...stringAvatar(user.name)}
+                  onClick={() => setAvatarMenuVisible((prev) => !prev)}
+                  sx={{ cursor: "pointer", marginTop: "-7px" }}
+                />
+              )}
+              <AvatarMenu>
+                <AvatarMenuItem onClick={handleLogout}>Wyloguj</AvatarMenuItem>
+                <SLink to={"/zamowienia"}>
+                  <AvatarMenuItem onClick={() => setAvatarMenuVisible(false)}>
+                    Moje zamówienia
+                  </AvatarMenuItem>
+                </SLink>
+              </AvatarMenu>
+            </div>
+          </ClickAwayListener>
+
           <SLink to="/koszyk">
             <MenuItem>
               <Badge badgeContent={itemsInCart} color="primary">

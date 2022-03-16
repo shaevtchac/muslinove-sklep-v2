@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import TextField from "@mui/material/TextField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import isEmail from "validator/es/lib/isEmail";
@@ -10,7 +9,7 @@ import { register } from "../redux/apiCalls";
 import { Button, Title, Input } from "../Reusables/StyledParts";
 
 const Container = styled.div`
-  width: 100wv;
+  width: 100vw;
   height: 100vh;
   background: linear-gradient(
       rgba(255, 255, 255, 0.5),
@@ -173,7 +172,7 @@ const Register = () => {
           onChange={handleInputChange}
         />
         <Input
-          id="address"
+          name="address"
           label="ulica, nr domu"
           value={inputs.address}
           onChange={handleInputChange}

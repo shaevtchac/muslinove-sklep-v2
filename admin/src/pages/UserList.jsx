@@ -1,23 +1,15 @@
-import styled from "styled-components";
-import { DataGrid } from "@mui/x-data-grid";
 import { DeleteOutline } from "@material-ui/icons";
-import { userRows } from "../dummyData";
+import { DataGrid } from "@mui/x-data-grid";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { Img } from "../components/Reusables";
+import styled from "styled-components";
+import { deleteUser, getUsers } from "../redux/apiCalls";
 
 const Container = styled.div`
   flex: 4;
 `;
-const UserName = styled.div`
-  display: flex;
-  align-items: center;
-`;
-const UserImg = styled(Img)`
-  width: 32px;
-  height: 32px;
-  margin-right: 10px;
-`;
+
 const ActionButtonEdit = styled.button`
   border: none;
   border-radius: 10px;
@@ -29,32 +21,35 @@ const ActionButtonEdit = styled.button`
 `;
 
 const UserList = () => {
-  const [data, setData] = useState(userRows);
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.user.users);
   const handleDeleteUser = (id) => {
-    setData(data.filter((item) => item.id !== id));
+    deleteUser(id, dispatch);
   };
-  const rows = data;
+  useEffect(() => {
+    getUsers(dispatch);
+  }, [dispatch]);
+
   const columns = [
-    { field: "id", headerName: "ID", width: 90 },
+    { field: "id", headerName: "ID", width: 200 },
     {
-      field: "user",
+      field: "name",
       headerName: "Nazwa użytkownika",
       width: 200,
-      renderCell: (params) => {
-        return (
-          <UserName>
-            <UserImg src={params.row.avatar} alt="" />
-            {params.row.username}
-          </UserName>
-        );
-      },
     },
     { field: "email", headerName: "E-mail", width: 200 },
     {
-      field: "status",
-      headerName: "Status",
-      type: "number",
-      width: 120,
+      field: "adres",
+      headerName: "Adres",
+      width: 250,
+      renderCell: (params) => {
+        return (
+          <>
+            {params.row.address}, <br />
+            {params.row.postalCode} {params.row.city}
+          </>
+        );
+      },
     },
     {
       field: "transaction",
@@ -72,10 +67,15 @@ const UserList = () => {
             <Link to={"/uzytkownik/" + params.row.id}>
               <ActionButtonEdit>Edycja</ActionButtonEdit>
             </Link>
-            <DeleteOutline
-              style={{ color: "red", cursor: "pointer" }}
-              onClick={() => handleDeleteUser(params.row.id)}
-            />
+            {/* disable delete option for admin and "unregistered user" accounts */}
+            {!params.row.isAdmin
+              ? params.row.id !== "6228682b4ab3a9d1ab3b1a03" && (
+                  <DeleteOutline
+                    style={{ color: "red", cursor: "pointer" }}
+                    onClick={() => handleDeleteUser(params.row.id)}
+                  />
+                )
+              : null}
           </>
         );
       },
@@ -84,7 +84,7 @@ const UserList = () => {
   return (
     <Container>
       <DataGrid
-        rows={rows}
+        rows={users}
         disableSelectionOnClick
         columns={columns}
         pageSize={8}

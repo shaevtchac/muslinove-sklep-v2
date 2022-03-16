@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { TextField } from "@mui/material";
 
 export const SLink = styled(Link)`
   text-decoration: none;
@@ -29,12 +30,18 @@ export const Img = styled.img`
   object-fit: cover;
 `;
 
-export const Input = styled.input`
-  border: 1px solid gray;
-  height: 1.5rem;
-  width: 250px;
-  border-radius: 5px;
-`;
+export function Input({ name, label, value, error, onChange, ...others }) {
+  return (
+    <TextField
+      name={name}
+      value={value}
+      label={label}
+      onChange={onChange}
+      {...(error && { error: true, helperText: error })}
+      {...others}
+    />
+  );
+}
 export const EditInput = styled.input`
   height: 20px;
   padding: 10px;

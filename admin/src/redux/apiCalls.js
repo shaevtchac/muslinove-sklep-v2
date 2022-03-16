@@ -19,7 +19,20 @@ import {
   removeProductPictureStart,
   removeProductPictureSuccess,
 } from "./productRedux";
-import { loginFailure, loginStart, loginSuccess } from "./userRedux";
+import {
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  getUsersFailure,
+  getUsersStart,
+  getUsersSuccess,
+  loginFailure,
+  loginStart,
+  loginSuccess,
+  updateUserFailure,
+  updateUserStart,
+  updateUserSuccess,
+} from "./userRedux";
 
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
@@ -110,5 +123,38 @@ export const addProduct = async (product, dispatch) => {
   } catch (dbError) {
     dispatch(addProductFailure());
     console.error(dbError);
+  }
+};
+
+export const getUsers = async (dispatch) => {
+  dispatch(getUsersStart());
+  try {
+    const res = await userRequest.get(`/users`);
+    dispatch(getUsersSuccess(res.data));
+  } catch (error) {
+    dispatch(getUsersFailure());
+    console.error(error);
+  }
+};
+
+export const deleteUser = async (id, dispatch) => {
+  dispatch(deleteUserStart());
+  try {
+    const res = await userRequest.delete(`/users/${id}`);
+    dispatch(deleteUserSuccess({ id }));
+  } catch (dbError) {
+    dispatch(deleteUserFailure());
+    console.error("Problem z usunięcien użytkownika", dbError);
+  }
+};
+
+export const updateUser = async (user, dispatch) => {
+  dispatch(updateUserStart());
+  try {
+    const res = await userRequest.put(`/users/${user.id}`, user);
+    dispatch(updateUserSuccess(res.data));
+  } catch (error) {
+    dispatch(updateUserFailure());
+    console.error(error);
   }
 };

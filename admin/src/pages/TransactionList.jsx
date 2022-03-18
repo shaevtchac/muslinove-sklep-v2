@@ -63,7 +63,7 @@ const TransactionList = () => {
     {
       field: "adres",
       headerName: "Adres do wysyłki",
-      width: 250,
+      width: 200,
       renderCell: (params) => {
         return (
           <>
@@ -73,6 +73,7 @@ const TransactionList = () => {
         );
       },
     },
+    { field: "message", headerName: "Wiadomość od klienta", width: 300 },
     {
       field: "status",
       headerName: "Status",

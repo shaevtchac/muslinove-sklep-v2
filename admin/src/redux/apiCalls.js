@@ -20,6 +20,14 @@ import {
   removeProductPictureSuccess,
 } from "./productRedux";
 import {
+  getTransactionsFailure,
+  getTransactionsStart,
+  getTransactionsSuccess,
+  updateTransactionFailure,
+  updateTransactionStart,
+  updateTransactionSuccess,
+} from "./transactionRedux";
+import {
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
@@ -155,6 +163,28 @@ export const updateUser = async (user, dispatch) => {
     dispatch(updateUserSuccess(res.data));
   } catch (error) {
     dispatch(updateUserFailure());
+    console.error(error);
+  }
+};
+
+export const getTransactions = async (dispatch) => {
+  dispatch(getTransactionsStart());
+  try {
+    const res = await userRequest.get(`/orders`);
+    dispatch(getTransactionsSuccess(res.data));
+  } catch (error) {
+    dispatch(getTransactionsFailure());
+    console.error(error);
+  }
+};
+
+export const updateTransaction = async (transaction, dispatch) => {
+  dispatch(updateTransactionStart());
+  try {
+    const res = await userRequest.put(`/orders/${transaction.id}`, transaction);
+    dispatch(updateTransactionSuccess(res.data));
+  } catch (error) {
+    dispatch(updateTransactionFailure());
     console.error(error);
   }
 };

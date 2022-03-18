@@ -138,20 +138,6 @@ const Cart = () => {
       console.error(tpayResError);
     }
   };
-  const translateStatus = (status) => {
-    switch (status) {
-      case "paid":
-        return "Zapłacone - w trakcie przygotowania";
-      case "sent":
-        return "Wysłane";
-      case "pending":
-        return "Oczekuje na płatność";
-      case "chargeback":
-        return "Płatność zwrócona";
-      default:
-        return status;
-    }
-  };
 
   useEffect(() => {
     const getOrders = async () => {
@@ -173,8 +159,8 @@ const Cart = () => {
               <Date>{formatDate(order.createdAt)}</Date>
               <OrderId>Id: {order.id}</OrderId>
               <Status>
-                Status: {translateStatus(order.status)}{" "}
-                {order.status === "pending" && (
+                Status: {order.status}
+                {order.status === "Nie zapłacone" && (
                   <Button
                     onClick={() => handlePayment(order)}
                     style={{ marginLeft: "1rem" }}

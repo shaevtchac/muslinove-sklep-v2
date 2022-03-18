@@ -82,7 +82,9 @@ const Sidebar = () => {
               </MenuItem>
             </SLink>
             <MenuItem>
-              <AttachMoney fontSize="small" /> Transakcje
+              <SLink to={"/transakcje"}>
+                <AttachMoney fontSize="small" /> Transakcje
+              </SLink>
             </MenuItem>
             <MenuItem>
               <BarChart fontSize="small" /> Raporty

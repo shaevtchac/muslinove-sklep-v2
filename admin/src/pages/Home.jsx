@@ -4,7 +4,6 @@ import Chart from "../components/Chart";
 import FeaturedInfo from "../components/FeaturedInfo";
 import WidgetLg from "../components/WidgetLg";
 import WidgetSm from "../components/WidgetSm";
-import { userData } from "../dummyData";
 import { userRequest } from "../requestMethods";
 
 const Container = styled.div`

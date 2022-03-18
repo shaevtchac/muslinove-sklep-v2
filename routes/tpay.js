@@ -64,9 +64,9 @@ router.post("/notifications", async (req, res) => {
     res.send("TRUE");
     let status = "";
     if (req.body.tr_status === "TRUE") {
-      status = "paid";
+      status = "Zapłacone";
     } else if (req.body.tr_status === "CHARGEBACK") {
-      status = "chargeback";
+      status = "Płatność zwrócona";
     } else status = req.body.tr_status;
     try {
       await Order.findByIdAndUpdate(order._id, { status });

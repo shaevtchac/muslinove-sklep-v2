@@ -1,7 +1,7 @@
 import { Visibility } from "@material-ui/icons";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Card, Img } from "./Reusables";
+import { Card, Img, SLink } from "./Reusables";
 import { userRequest } from "../requestMethods";
 
 const Container = styled(Card)`
@@ -65,19 +65,15 @@ const WidgetSm = () => {
       <List>
         {users.map((user) => (
           <ListItem key={user._id}>
-            <Img
-              src={
-                user.img ||
-                "https://smart-be.pl/wp-content/uploads/2016/07/no-avatar-300x300.jpg"
-              }
-            />
             <User>
-              <UserName>{user.userName}</UserName>
+              <UserName>{user.name}</UserName>
             </User>
-            <Button>
-              Pokaż
-              <Visibility fontSize="small" />
-            </Button>
+            <SLink to={`/uzytkownik/${user._id}`}>
+              <Button>
+                Pokaż
+                <Visibility fontSize="small" />
+              </Button>
+            </SLink>
           </ListItem>
         ))}
       </List>

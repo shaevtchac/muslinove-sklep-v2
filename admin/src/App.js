@@ -18,6 +18,7 @@ import NewProduct from "./pages/NewProduct";
 import Product from "./pages/Product";
 import Login from "./pages/Login";
 import { useSelector } from "react-redux";
+import TransactionList from "./pages/TransactionList";
 
 const Container = styled.div`
   display: flex;
@@ -53,6 +54,7 @@ function App() {
           <Route path="/" element={<PrivateRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/uzytkownicy" element={<UserList />} />
+            <Route path="/transakcje" element={<TransactionList />} />
             <Route path="/uzytkownik/:userId" element={<User />} />
             <Route path="/nowy_uzytkownik" element={<NewUser />} />
             <Route path="/produkty" element={<ProductList />} />

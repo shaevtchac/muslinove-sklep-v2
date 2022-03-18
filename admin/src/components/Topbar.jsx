@@ -5,6 +5,7 @@ import { SLink } from "./Reusables";
 import { useDispatch } from "react-redux";
 import { reset as userReset } from "../redux/userRedux";
 import { reset as productReset } from "../redux/productRedux";
+import { reset as transactionReset } from "../redux/transactionRedux";
 const Container = styled.nav`
   width: 100%;
   height: 50px;
@@ -52,6 +53,7 @@ const Topbar = () => {
     e.preventDefault();
     dispatch(userReset());
     dispatch(productReset());
+    dispatch(transactionReset());
   };
   return (
     <Container>

@@ -178,6 +178,7 @@ const Cart = () => {
       address: inputs.address,
       postalCode: inputs.postalCode,
       city: inputs.city,
+      message: inputs.message,
       products: cart.products.map((entry) => {
         return { quantity: entry.quantity, product: entry._id };
       }),
@@ -360,6 +361,16 @@ const Cart = () => {
                   helperText="nie musisz podawać, ale przyda się dla kuriera"
                 />
               </Box>
+              <Divider textAlign="left">Wiadomość do sprzedającego</Divider>
+              <Input
+                name="message"
+                multiline
+                fullWidth
+                value={inputs.message}
+                label="Uwagi dotyczące zamówienia."
+                onChange={handleInputChange}
+                sx={{ mt: 1, mb: 2 }}
+              />
               <Button
                 type="submit"
                 filled

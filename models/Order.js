@@ -34,6 +34,9 @@ const OrderSchema = new mongoose.Schema(
     city: {
       type: String,
     },
+    message: {
+      type: String,
+    },
     status: { type: String, default: "Nie zapłacone" },
   },
   { timestamps: true, toJSON: { getters: true } }

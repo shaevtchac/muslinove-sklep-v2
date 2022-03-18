@@ -17,7 +17,7 @@ router.post("/md5", (req, res) => {
   const md5Sum = calculateMD5(req.body.amount, req.body.crc);
   res.json({ md5Sum, tpayId: process.env.TPAY_CLIENT_ID });
 });
-
+// Powiadomienia _______________________________________________________________________________________________________________________________
 router.post("/notifications", async (req, res) => {
   var order = null;
   const tpayIP = req.headers["x-forwarded-for"];
@@ -35,7 +35,7 @@ router.post("/notifications", async (req, res) => {
   //return if order confirmed before and respond TRUE
   try {
     order = await Order.findById(req.body.tr_crc);
-    if (order.status === "paid") {
+    if (order.status === "Zapłacone") {
       res.send("TRUE");
       return;
     }
@@ -51,7 +51,7 @@ router.post("/notifications", async (req, res) => {
 
   if (
     req.body.tr_crc === order._id.toString() &&
-    parseFloat(req.body.tr_amount) * 100 === order.amount &&
+    parseFloat(req.body.tr_amount) === parseFloat(order.amount) &&
     req.body.md5sum ===
       CryptoJS.MD5(
         process.env.TPAY_CLIENT_ID +
@@ -87,8 +87,8 @@ router.post("/notifications", async (req, res) => {
       order._id.toString(),
       "parseFloat(req.body.tr_amount) * 100",
       parseFloat(req.body.tr_amount) * 100,
-      "=order.amount",
-      order.amount,
+      "parseFloat(order.amount)",
+      parseFloat(order.amount),
       "req.body.md5sum:",
       req.body.md5sum,
       "=calc md5:",

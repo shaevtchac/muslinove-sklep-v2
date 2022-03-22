@@ -122,7 +122,7 @@ const Product = () => {
   };
 
   const handleAddToCart = () => {
-    dispatch(addProduct({ ...product, quantity, color }));
+    dispatch(addProduct({ ...product, quantity }));
   };
 
   return (

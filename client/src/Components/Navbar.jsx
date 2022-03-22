@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "@emotion/styled";
-import { logout } from "../redux/userRedux";
 import { SLink } from "../Reusables/StyledParts";
 import Avatar from "@mui/material/Avatar";
 import * as templateColors from "../Reusables/Constants/Colors";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
+import { logOut } from "../redux/apiCalls";
 
 const Container = styled.nav`
   height: 60px;
@@ -61,7 +61,13 @@ const AvatarMenuItem = styled(MenuItem)`
 // `;
 
 const Navbar = () => {
-  const itemsInCart = useSelector((state) => state.cart.itemsInCart);
+  const numberOfItemsInCart = useSelector((state) => state.cart.itemsInCart);
+  const cartProducts = useSelector((state) =>
+    state.cart.products.map((item) => ({
+      product: item._id,
+      quantity: item.quantity,
+    }))
+  );
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const [avatarMenuVisible, setAvatarMenuVisible] = useState(false);
@@ -81,7 +87,7 @@ const Navbar = () => {
   const handleLogout = (e) => {
     e.preventDefault();
     setAvatarMenuVisible(false);
-    dispatch(logout());
+    logOut(dispatch, user, { products: cartProducts });
   };
   function stringToColor(string) {
     let hash = 0;
@@ -155,7 +161,7 @@ const Navbar = () => {
 
           <SLink to="/koszyk">
             <MenuItem>
-              <Badge badgeContent={itemsInCart} color="primary">
+              <Badge badgeContent={numberOfItemsInCart} color="primary">
                 <ShoppingCartOutlined />
               </Badge>
             </MenuItem>

@@ -6,6 +6,8 @@ import { mobile } from "../responsive";
 import TextField from "@mui/material/TextField";
 import { Button } from "../Reusables/StyledParts";
 import { useNavigate } from "react-router-dom";
+import { publicRequest } from "../requestMethods";
+import { addProduct } from "../redux/cartRedux";
 
 const Container = styled.div`
   width: 100vw;
@@ -53,9 +55,27 @@ const Login = () => {
   const { isFetching, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
 
-  const handleLoginButton = (e) => {
-    e.preventDefault();
-    login(dispatch, { email, password });
+  const handleLoginButton = async (e) => {
+    try {
+      const user = await login(dispatch, { email, password });
+      console.log(user);
+      try {
+        const res = await publicRequest.get(`carts/find/${user._id}`, {
+          headers: { token: `Bearer ${user.accessToken}` },
+        });
+        const cartProducts = res.data.products;
+        if (cartProducts.length > 0) {
+          cartProducts.forEach((item) =>
+            dispatch(addProduct({ ...item.product, quantity: item.quantity }))
+          );
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } catch (loginError) {
+      console.error(loginError);
+    }
+
     navigate(-1);
   };
   return (
@@ -68,7 +88,6 @@ const Login = () => {
             id="email"
             label="e-mail"
             onChange={(e) => setEmail(e.target.value)}
-            // defaultValue="Hello World"
           />
 
           <TextField
@@ -80,11 +99,7 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <Button
-            type="filled"
-            onClick={handleLoginButton}
-            disabled={isFetching}
-          >
+          <Button filled onClick={handleLoginButton} disabled={isFetching}>
             ZALOGUJ
           </Button>
           {error && <Error>Coś poszło nie tak</Error>}

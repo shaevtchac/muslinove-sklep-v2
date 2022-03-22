@@ -47,6 +47,8 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
   }
 });
 
+//update  order for unregistered users moved to auth
+
 //delete____________________________________________________________________________
 router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
   try {

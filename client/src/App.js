@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
+  Outlet,
 } from "react-router-dom";
 
 import Cart from "./Pages/Cart";
@@ -21,6 +22,13 @@ function App() {
   const LoginWrapper = ({ children, currentUser }) => {
     return currentUser ? <Navigate to="/" replace /> : children;
   };
+  const PrivateRoute = () => {
+    // determine if authorized, from context or however you're doing it
+
+    // If authorized, return an outlet that will render child elements
+    // If not, return element that will navigate to login page
+    return user ? <Outlet /> : <Navigate to="/" />;
+  };
   return (
     <Router>
       <Routes>
@@ -28,9 +36,11 @@ function App() {
         <Route path="/produkty/:category" element={<ProductList />} />
         <Route path="/produkt/:id" element={<Product />} />
         <Route path="/koszyk" element={<Cart />} />
+        <Route path="/" element={<PrivateRoute />}>
+          <Route path="/zamowienia" element={<Orders />} />
+        </Route>
         <Route path="/podsumowanie" element={<OrderSummary />} />
         <Route path="/platnosc_ok" element={<Success />} />
-        <Route path="/zamowienia" element={<Orders />} />
         <Route
           path="/logowanie"
           element={

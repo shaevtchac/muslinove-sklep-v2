@@ -1,10 +1,18 @@
 const router = require("express").Router();
 const fs = require("fs");
+const path = require("path");
 const { verifyTokenAndAdmin } = require("./verifyToken");
+var imgBasePath = "";
+if (process.env.NODE_ENV === "production") {
+  imgBasePath = path.resolve(__dirname, "../client/build/");
+} else {
+  imgBasePath = __dirname + "../../admin/public/";
+}
 
 router.post("/upload", verifyTokenAndAdmin, function (req, res) {
   let image;
   let uploadPath;
+  let imagesPath;
 
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send("No files were uploaded.");
@@ -12,9 +20,20 @@ router.post("/upload", verifyTokenAndAdmin, function (req, res) {
 
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   image = req.files.image;
-  uploadPath =
-    __dirname + "../../admin/public/images/" + req.body.id + "/" + image.name;
+  imagesPath = imgBasePath + "/images/" + req.body.id + "/";
+  uploadPath = imagesPath + image.name;
 
+  if (!fs.existsSync(imagesPath)) {
+    fs.mkdir(imagesPath, (err) => {
+      if (err) {
+        console.error(err);
+        res
+          .status(400)
+          .send("Nie udało się utworzyć katalogu" + "\n" + err.message);
+        return;
+      }
+    });
+  }
   // Use the mv() method to place the file somewhere on your server
   image.mv(uploadPath, function (err) {
     if (err)
@@ -27,7 +46,7 @@ router.post("/upload", verifyTokenAndAdmin, function (req, res) {
 });
 
 router.post("/remove", verifyTokenAndAdmin, function (req, res) {
-  const path = __dirname + "../../admin/public" + req.body.path;
+  const path = imgBasePath + req.body.path;
 
   fs.unlink(path, (err) => {
     if (err) {
@@ -40,7 +59,7 @@ router.post("/remove", verifyTokenAndAdmin, function (req, res) {
 });
 
 router.post("/create_dir", verifyTokenAndAdmin, function (req, res) {
-  const path = __dirname + "../../admin/public/images/" + req.body.id;
+  const path = imgBasePath + "/images/" + req.body.id;
 
   fs.mkdir(path, (err) => {
     if (err) {
@@ -55,7 +74,7 @@ router.post("/create_dir", verifyTokenAndAdmin, function (req, res) {
 });
 
 router.post("/remove_dir", verifyTokenAndAdmin, function (req, res) {
-  const path = __dirname + "../../admin/public/images/" + req.body.id;
+  const path = imgBasePath + "/images/" + req.body.id;
 
   fs.rm(path, { recursive: true }, (err) => {
     if (err) {

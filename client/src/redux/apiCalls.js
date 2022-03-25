@@ -64,6 +64,9 @@ export const register = async (dispatch, user, orderId) => {
   } catch (error) {
     console.error("problem z utworzeniem nowego użytkownika");
     console.error(error);
-    dispatch(registerFailure());
+    // console.log(error.response.data);
+    // console.log(error.response.status);
+    // console.log(error.response.headers);
+    dispatch(registerFailure(error.response.data));
   }
 };

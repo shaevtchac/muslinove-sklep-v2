@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import isEmail from "validator/es/lib/isEmail";
 import { Form, useForm } from "../Components/useForm";
@@ -27,8 +27,12 @@ const Agreement = styled.div`
   font-size: 0.8rem;
   margin: 1rem 0;
 `;
+const Error = styled.span`
+  color: red;
+`;
 
 const Register = () => {
+  const { isFetching, error, errorMsg } = useSelector((state) => state.user);
   const inputsInitialState = {
     email: "",
     password: "",
@@ -88,7 +92,7 @@ const Register = () => {
 
     if (formValidatedOk()) {
       register(dispatch, user);
-      navigate("/logowanie");
+      if (!error) navigate("/logowanie");
     }
   };
   return (
@@ -200,6 +204,7 @@ const Register = () => {
           <Button
             onClick={(e) => handleCreateButtonClick(e)}
             filled
+            disabled={isFetching}
             style={{ float: "right" }}
           >
             UTWÓRZ
@@ -217,6 +222,7 @@ const Register = () => {
             Wyczyść formularz
           </Button>
         </Box>
+        {error && <Error>{errorMsg}</Error>}
       </Form>
     </Container>
   );

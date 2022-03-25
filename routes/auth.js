@@ -7,6 +7,17 @@ const { verifyOrderIdToken } = require("./verifyToken");
 
 //Register__________________________________________________________________________________
 router.post("/register", async (req, res) => {
+  try {
+    const rUser = await User.find({ email: req.body.email });
+    if (rUser) {
+      return res
+        .status(422)
+        .send("Użytkownik o podanym adresie e-mail jest już zarejestrowany.");
+    }
+  } catch (error) {
+    console.error("Problem ze sprawdzeniem czy użytkownik jedt e bazie.");
+    console.error(error);
+  }
   const newUser = new User({
     ...req.body,
     password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SEC),

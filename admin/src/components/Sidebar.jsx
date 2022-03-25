@@ -62,9 +62,7 @@ const Sidebar = () => {
                 <LineStyle fontSize="small" /> Główna
               </MenuItem>
             </SLink>
-            <MenuItem>
-              <Timeline fontSize="small" /> Analizy
-            </MenuItem>
+
             <MenuItem>
               <TrendingUp fontSize="small" /> Sprzedaż
             </MenuItem>
@@ -85,33 +83,6 @@ const Sidebar = () => {
               <SLink to={"/transakcje"}>
                 <AttachMoney fontSize="small" /> Transakcje
               </SLink>
-            </MenuItem>
-            <MenuItem>
-              <BarChart fontSize="small" /> Raporty
-            </MenuItem>
-          </ItemsWrapper>
-          <Title>Powiadomienia</Title>
-          <ItemsWrapper>
-            <MenuItem>
-              <MailOutline fontSize="small" /> Poczta
-            </MenuItem>
-            <MenuItem>
-              <DynamicFeed fontSize="small" /> Feedback
-            </MenuItem>
-            <MenuItem>
-              <ChatBubbleOutline fontSize="small" /> Wiadomości
-            </MenuItem>
-          </ItemsWrapper>
-          <Title>Staff</Title>
-          <ItemsWrapper>
-            <MenuItem>
-              <WorkOutline fontSize="small" /> Zarządzaj
-            </MenuItem>
-            <MenuItem>
-              <Timeline fontSize="small" /> Analizy
-            </MenuItem>
-            <MenuItem>
-              <Report fontSize="small" /> Raporty
             </MenuItem>
           </ItemsWrapper>
         </Menu>

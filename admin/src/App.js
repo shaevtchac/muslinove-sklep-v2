@@ -46,7 +46,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <Router basename="/admin">
       {auth && <Topbar />}
       <Container>
         {auth && <Sidebar />}
@@ -58,7 +58,7 @@ function App() {
             <Route path="/uzytkownik/:userId" element={<User />} />
             <Route path="/nowy_uzytkownik" element={<NewUser />} />
             <Route path="/produkty" element={<ProductList />} />
-            <Route path="/produkt/:productId" element={<Product />} />
+            <Route path="/edytuj_produkt/:productId" element={<Product />} />
             <Route path="/nowy_produkt" element={<NewProduct />} />
           </Route>
           <Route path="/logowanie" element={<Login />} />

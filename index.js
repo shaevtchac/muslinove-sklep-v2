@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
   app.use(express.static("admin/build"));
   const path = require("path");
-  app.get("/admin", (req, res) => {
+  app.get("/admin*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "admin", "build", "index.html"));
   });
   app.get("*", (req, res) => {

@@ -238,7 +238,7 @@ const Product = () => {
 
   useEffect(() => {
     if (newProductId) {
-      navigate("/produkt/" + newProductId, { replace: true });
+      navigate("/edytuj_produkt/" + newProductId);
       dispatch(resetNewProductId());
       window.location.reload();
     }
@@ -248,7 +248,9 @@ const Product = () => {
     <Container>
       <TitleWrapper>
         <Title>Produkt</Title>
-        <Button onClick={handleCreateNewButtonClick}>Nowy</Button>
+        <Button filled onClick={handleCreateNewButtonClick}>
+          Nowy
+        </Button>
       </TitleWrapper>
       <Top>
         <TopLeft>

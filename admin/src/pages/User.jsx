@@ -146,7 +146,7 @@ const User = () => {
       <TitleContainer>
         <Title>Edycja Użytkownika</Title>
         <Link to="/nowy_uzytkownik">
-          <Button>Utwórz</Button>
+          <Button filled>Utwórz</Button>
         </Link>
       </TitleContainer>
       <UserContainer>
@@ -245,7 +245,9 @@ const User = () => {
                 />
               </UserUpdateItem>
               <UserUpdateItem>
-                <Button onClick={handleUpdateUser}>Zapisz</Button>
+                <Button filled onClick={handleUpdateUser}>
+                  Zapisz
+                </Button>
               </UserUpdateItem>
             </FormLeft>
           </Form>

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { TextField } from "@mui/material";
+import * as colors from "./Constants/Colors";
 
 export const SLink = styled(Link)`
   text-decoration: none;
@@ -8,13 +9,28 @@ export const SLink = styled(Link)`
 `;
 
 export const Button = styled.button`
-  width: 80px;
-  border: none;
-  padding: 5px;
-  background-color: teal;
-  cursor: pointer;
-  color: white;
+  padding: 10px;
+  font-weight: 600;
   border-radius: 5px;
+  cursor: pointer;
+  border: ${(props) =>
+    props.filled ? "none" : "1px solid " + colors.BODY_COLOR_DARK};
+  background-color: ${(props) =>
+    props.filled ? colors.BODY_COLOR_DARK : colors.WHITE_TRANSPARENT_50};
+  color: ${(props) => (props.filled ? "white" : colors.TEXT_COLOR_DARK)};
+  -webkit-box-shadow: -1px 1px 4px 0px black;
+  -moz-box-shadow: -1px 1px 4px 0px black;
+  box-shadow: -1px 1px 4px 0px black;
+  transition: 300ms ease-in;
+  &:hover {
+    background-color: ${(props) =>
+      props.filled ? colors.TEXT_COLOR_DARK : colors.WHITE_TRANSPARENT_70};
+  }
+  &:disabled {
+    color: gray;
+    background-color: white;
+    cursor: not-allowed;
+  }
 `;
 
 export const Card = styled.div`

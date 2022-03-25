@@ -2,10 +2,15 @@ import styled from "styled-components";
 import { NotificationsNone, Language, Settings } from "@material-ui/icons";
 import { Badge } from "@material-ui/core";
 import { SLink } from "./Reusables";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { reset as userReset } from "../redux/userRedux";
 import { reset as productReset } from "../redux/productRedux";
 import { reset as transactionReset } from "../redux/transactionRedux";
+import Avatar from "@mui/material/Avatar";
+import * as templateColors from "./Constants/Colors";
+import { useState } from "react";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+
 const Container = styled.nav`
   width: 100%;
   height: 50px;
@@ -32,29 +37,65 @@ const Right = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
-  color: #555;
 `;
-const Avatar = styled.img`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+
+const AvatarMenuItem = styled.div`
+  margin: 0;
+  text-align: center;
+  width: 100%;
+  color: white;
   cursor: pointer;
-  margin-left: 10px;
 `;
-const MenuItem = styled.span`
-  font-weight: 400;
-  font-size: 0.8rem;
-  cursor: pointer;
+const AvatarMenu = styled.div`
+  width: 100px;
+  background-color: ${templateColors.BODY_COLOR_LIGHT};
+  border-radius: 5px;
+  position: absolute;
+  top: 47px;
+  right: 5px;
+  padding: 0.5rem;
+  z-index: 1;
+  opacity: ${(props) => (props.avatarMenuVisible ? 1 : 0)};
 `;
 
 const Topbar = () => {
+  const [avatarMenuVisible, setAvatarMenuVisible] = useState(false);
+  const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
-  const handleLogoutClick = (e) => {
+  const handleLogout = (e) => {
     e.preventDefault();
     dispatch(userReset());
     dispatch(productReset());
     dispatch(transactionReset());
   };
+
+  function stringToColor(string) {
+    let hash = 0;
+    let i;
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = "#";
+
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.substr(-2);
+    }
+    /* eslint-enable no-bitwise */
+    return color;
+  }
+
+  function stringAvatar(name) {
+    return {
+      sx: {
+        bgcolor: stringToColor(name),
+      },
+      children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+    };
+  }
   return (
     <Container>
       <Wrapper>
@@ -64,13 +105,27 @@ const Topbar = () => {
           </SLink>
         </Left>
         <Right>
-          <MenuItem onClick={(e) => handleLogoutClick(e)}>Wyloguj</MenuItem>
-          <Language />
-          <Settings />
-          <Badge badgeContent={3} color="primary">
+          <ClickAwayListener onClickAway={() => setAvatarMenuVisible(false)}>
+            <div>
+              {user && (
+                <Avatar
+                  {...stringAvatar(user.name)}
+                  onClick={() => setAvatarMenuVisible((prev) => !prev)}
+                  sx={{
+                    cursor: "pointer",
+                    marginTop: "-7px",
+                    bgcolor: stringToColor(user.name),
+                  }}
+                />
+              )}
+              <AvatarMenu avatarMenuVisible={avatarMenuVisible}>
+                <AvatarMenuItem onClick={handleLogout}>Wyloguj</AvatarMenuItem>
+              </AvatarMenu>
+            </div>
+          </ClickAwayListener>
+          <Badge badgeContent={0} color="primary">
             <NotificationsNone />
           </Badge>
-          <Avatar src="https://static.vecteezy.com/system/resources/thumbnails/001/993/889/small/beautiful-latin-woman-avatar-character-icon-free-vector.jpg" />
         </Right>
       </Wrapper>
     </Container>

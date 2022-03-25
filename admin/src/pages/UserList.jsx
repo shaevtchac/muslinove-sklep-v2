@@ -1,6 +1,6 @@
 import { DeleteOutline } from "@material-ui/icons";
 import { DataGrid } from "@mui/x-data-grid";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -8,6 +8,7 @@ import { deleteUser, getUsers } from "../redux/apiCalls";
 
 const Container = styled.div`
   flex: 4;
+  height: calc(100vh - 60px);
 `;
 
 const ActionButtonEdit = styled.button`
@@ -21,6 +22,7 @@ const ActionButtonEdit = styled.button`
 `;
 
 const UserList = () => {
+  const [pageSize, setPageSize] = useState(10);
   const dispatch = useDispatch();
   const users = useSelector((state) => state.user.users);
   const handleDeleteUser = (id) => {
@@ -87,8 +89,9 @@ const UserList = () => {
         rows={users}
         disableSelectionOnClick
         columns={columns}
-        pageSize={8}
-        rowsPerPageOptions={[5]}
+        pageSize={pageSize}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        rowsPerPageOptions={[10, 20, 50]}
         checkboxSelection
       />
     </Container>

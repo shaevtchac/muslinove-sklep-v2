@@ -2,13 +2,14 @@ import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
 import { DeleteOutline } from "@material-ui/icons";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Img } from "../components/Reusables";
 import { deleteProduct, getProducts } from "../redux/apiCalls";
 
 const Container = styled.div`
   flex: 4;
+  height: calc(100vh - 60px);
 `;
 const ProdName = styled.div`
   display: flex;
@@ -30,6 +31,7 @@ const ActionButtonEdit = styled.button`
 `;
 
 const ProductList = () => {
+  const [pageSize, setPageSize] = useState(10);
   const dispatch = useDispatch();
   const products = useSelector((state) => state.product.products);
   useEffect(() => {
@@ -76,7 +78,7 @@ const ProductList = () => {
       renderCell: (params) => {
         return (
           <>
-            <Link to={"/produkt/" + params.row._id}>
+            <Link to={"/edytuj_produkt/" + params.row._id}>
               <ActionButtonEdit>Edycja</ActionButtonEdit>
             </Link>
             <DeleteOutline
@@ -96,8 +98,9 @@ const ProductList = () => {
           disableSelectionOnClick
           columns={columns}
           getRowId={(row) => row._id}
-          pageSize={8}
-          rowsPerPageOptions={[5]}
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 20, 50]}
           checkboxSelection
         />
       )}

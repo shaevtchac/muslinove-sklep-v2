@@ -35,6 +35,17 @@ const Right = styled.div`
   align-items: center;
   position: relative;
 `;
+const AvatarMenu = styled.div`
+  width: 150px;
+  background-color: ${templateColors.WHITE_TRANSPARENT_70};
+  border-radius: 5px;
+  position: absolute;
+  top: 47px;
+  right: -17px;
+  padding: 0.5rem;
+  z-index: 1;
+  opacity: ${(props) => (props.avatarMenuVisible ? 1 : 0)};
+`;
 const MenuItem = styled.div`
   font-size: 14px;
   cursor: pointer;
@@ -71,18 +82,6 @@ const Navbar = () => {
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const [avatarMenuVisible, setAvatarMenuVisible] = useState(false);
-
-  const AvatarMenu = styled.div`
-    width: 150px;
-    background-color: ${templateColors.WHITE_TRANSPARENT_70};
-    border-radius: 5px;
-    position: absolute;
-    top: 47px;
-    right: -17px;
-    padding: 0.5rem;
-    z-index: 1;
-    opacity: ${avatarMenuVisible ? 1 : 0};
-  `;
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -148,7 +147,7 @@ const Navbar = () => {
                   sx={{ cursor: "pointer", marginTop: "-7px" }}
                 />
               )}
-              <AvatarMenu>
+              <AvatarMenu avatarMenuVisible={avatarMenuVisible}>
                 <AvatarMenuItem onClick={handleLogout}>Wyloguj</AvatarMenuItem>
                 <SLink to={"/zamowienia"}>
                   <AvatarMenuItem onClick={() => setAvatarMenuVisible(false)}>

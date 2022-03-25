@@ -7,7 +7,7 @@ import {
   GridToolbarFilterButton,
   plPL,
 } from "@mui/x-data-grid";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { getTransactions, updateTransaction } from "../redux/apiCalls";
@@ -33,6 +33,7 @@ const Container = styled.div`
 `;
 
 const TransactionList = () => {
+  const [pageSize, setPageSize] = useState(10);
   const dispatch = useDispatch();
   const transactions = useSelector((state) => state.transaction.transactions);
 
@@ -153,7 +154,8 @@ const TransactionList = () => {
             rows={transactions}
             disableSelectionOnClick
             columns={columns}
-            pageSize={10}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={[10, 20, 50]}
             checkboxSelection
             getRowClassName={(params) =>

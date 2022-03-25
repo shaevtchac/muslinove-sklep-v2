@@ -1,16 +1,18 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/api/"; //http://localhost:5000/api/  http://sklep.muslinove.pl/api/
+export const getToken = () => {
+  const storage = localStorage.getItem("persist:root");
+  let user = null;
+  if (storage === null) return "no data storage";
+  user = JSON.parse(JSON.parse(storage).user).currentUser;
+  if (user === null) return "no user logged in";
 
-const storage = localStorage.getItem("persist:root");
-const localStorageUser = storage
-  ? JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
-      .currentUser
-  : null;
-const TOKEN = localStorageUser
-  ? JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
-      .currentUser.accessToken
-  : "";
+  return user.accessToken;
+};
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://sklep.muslinove.pl/api/"
+    : "http://localhost:5000/api/";
 
 export const publicRequest = axios.create({
   baseURL: BASE_URL,
@@ -18,11 +20,14 @@ export const publicRequest = axios.create({
 
 export const userRequest = axios.create({
   baseURL: BASE_URL,
-  headers: { token: `Bearer ${TOKEN}` },
+  headers: { token: `Bearer ${getToken()}` },
 });
 export const userRequestForm = axios.create({
   baseURL: BASE_URL,
-  headers: { token: `Bearer ${TOKEN}`, "Content-Type": "multipart/form-data" },
+  headers: {
+    token: `Bearer ${getToken()}`,
+    "Content-Type": "multipart/form-data",
+  },
 });
 
 export const tPayRequest = axios.create({

@@ -15,7 +15,7 @@ router.post("/register", async (req, res) => {
         .send("Użytkownik o podanym adresie e-mail jest już zarejestrowany.");
     }
   } catch (error) {
-    console.error("Problem ze sprawdzeniem czy użytkownik jedt e bazie.");
+    console.error("Problem ze sprawdzeniem czy użytkownik jest w bazie.");
     console.error(error);
   }
   const newUser = new User({

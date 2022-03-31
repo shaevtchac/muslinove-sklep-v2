@@ -1,41 +1,36 @@
-import styled from "styled-components";
-import Sidebar from "./components/Sidebar";
-import Topbar from "./components/Topbar";
-import Home from "./pages/Home";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Outlet,
-  Navigate,
-  useNavigate,
-} from "react-router-dom";
-import UserList from "./pages/UserList";
-import User from "./pages/User";
-import NewUser from "./pages/NewUser.jsx";
-import ProductList from "./pages/ProductList";
-import NewProduct from "./pages/NewProduct";
-import Product from "./pages/Product";
-import Login from "./pages/Login";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import { styled } from "@mui/material/styles";
+import { useState } from "react";
 import { useSelector } from "react-redux";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import AppBar from "./components/AppBar";
+import Drawer from "./components/Drawer";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import NewProduct from "./pages/NewProduct";
+import NewUser from "./pages/NewUser";
+import Product from "./pages/Product";
+import ProductList from "./pages/ProductList";
+import TransactionDetails from "./pages/TransactionDetails";
 import TransactionList from "./pages/TransactionList";
+import User from "./pages/User";
+import UserList from "./pages/UserList";
 
-const Container = styled.div`
-  display: flex;
-  margin-top: 10px;
-`;
+export const drawerWidth = 240;
+export const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+}));
 
-function App() {
-  // const navigate = useNavigate();
-  // if (localStorage.getItem("persist:root") === null) navigate("/logowanie");
-  // console.log(localStorage.getItem("persist:root"));
+export default function App() {
+  const [open, setOpen] = useState(true);
   const user = useSelector((state) => state.user.currentUser);
   const auth = user && user.isAdmin;
-  // const storage = localStorage.getItem("persist:root");
-  // const admin = storage
-  //   ? JSON.parse(JSON.parse(localStorage.getItem("persist:root"))?.user)
-  //       .currentUser?.isAdmin
-  //   : null;
 
   const PrivateRoute = () => {
     // determine if authorized, from context or however you're doing it
@@ -45,11 +40,28 @@ function App() {
     return auth ? <Outlet /> : <Navigate to="/logowanie" />;
   };
 
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
   return (
-    <Router basename="/admin">
-      {auth && <Topbar />}
-      <Container>
-        {auth && <Sidebar />}
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <AppBar
+        handleDrawerOpen={handleDrawerOpen}
+        open={open}
+        username={user ? user.name : null}
+      />
+
+      <Drawer open={open} handleDrawerClose={handleDrawerClose} />
+
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <DrawerHeader />
+
         <Routes>
           <Route path="/" element={<PrivateRoute />}>
             <Route path="/" element={<Home />} />
@@ -60,12 +72,14 @@ function App() {
             <Route path="/produkty" element={<ProductList />} />
             <Route path="/edytuj_produkt/:productId" element={<Product />} />
             <Route path="/nowy_produkt" element={<NewProduct />} />
+            <Route
+              path="/transakcja/:transactionId"
+              element={<TransactionDetails />}
+            />
           </Route>
           <Route path="/logowanie" element={<Login />} />
         </Routes>
-      </Container>
-    </Router>
+      </Box>
+    </Box>
   );
 }
-
-export default App;

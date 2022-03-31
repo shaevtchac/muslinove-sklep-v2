@@ -2,6 +2,56 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { TextField } from "@mui/material";
 import * as colors from "./Constants/Colors";
+import { format, register } from "timeago.js";
+
+const localeFunc = (number, index, totalSec) => {
+  // index: the index of array below;
+  // totalSec: total seconds between date to be formatted and today's date;
+  return [
+    ["w tej chwili", "za chwilę"],
+    ["%s sekund temu", "za %s sekund"],
+    ["1 minutę temu", "za 1 minutę"],
+    ["%s minut temu", "za %s minut"],
+    ["1 godzinę temu", "za 1 godzinę"],
+    ["%s godzin temu", "za %s godzin"],
+    ["1 dzień temu", "za 1 dzień"], // ['wczoraj', 'jutro'],
+    ["%s dni temu", "za %s dni"],
+    ["1 tydzień temu", "za 1 tydzień"],
+    ["%s tygodni temu", "za %s tygodni"],
+    ["1 miesiąc temu", "za 1 miesiąc"],
+    ["%s miesięcy temu", "za %s miesięcy"],
+    ["1 rok temu", "za 1 rok"],
+    ["%s lat temu", "za %s lat"],
+    ["%s sekundy temu", "za %s sekundy"],
+    ["%s minuty temu", "za %s minuty"],
+    ["%s godziny temu", "za %s godziny"],
+    ["%s dni temu", "za %s dni"],
+    ["%s tygodnie temu", "za %s tygodnie"],
+    ["%s miesiące temu", "za %s miesiące"],
+    ["%s lata temu", "za %s lata"],
+  ][index];
+};
+// register your locale with timeago
+register("pl_PL", localeFunc);
+
+export const TimeAgoDate = ({ dbDate }) => {
+  return <span>{format(dbDate, "pl_PL")}</span>;
+};
+
+export const DateTimeFormatted = ({ dbDate }) => {
+  const date = new window.Date(dbDate);
+  var options = {
+    weekday: "short",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  };
+  const dateFormatted = new Intl.DateTimeFormat("pl-PL", options).format(date);
+  return <span>{dateFormatted}</span>;
+};
 
 export const SLink = styled(Link)`
   text-decoration: none;

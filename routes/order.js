@@ -84,6 +84,18 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     res.status(500).json(error);
   }
 });
+//get single _______________________________________________________________________________________________
+router.get("/:Id", verifyTokenAndAdmin, async (req, res) => {
+  const id = req.params.Id;
+  try {
+    const order = await Order.findById(id).populate({
+      path: "products.product",
+    });
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 
 //get monthly income_________________________________------------------------------------------------------------
 router.get("/income", verifyTokenAndAdmin, async (req, res) => {

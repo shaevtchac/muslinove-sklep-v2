@@ -13,6 +13,9 @@ import styled from "styled-components";
 import { getTransactions, updateTransaction } from "../redux/apiCalls";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Box } from "@mui/material";
+import { Button } from "../components/Reusables";
+import { useNavigate } from "react-router-dom";
+import { statusOptions } from "../components/Constants/StatusOptions";
 
 const theme = createTheme(
   {
@@ -36,6 +39,7 @@ const TransactionList = () => {
   const [pageSize, setPageSize] = useState(10);
   const dispatch = useDispatch();
   const transactions = useSelector((state) => state.transaction.transactions);
+  const navigate = useNavigate();
 
   const handleUpdateOrder = (params) => {
     updateTransaction(
@@ -60,6 +64,21 @@ const TransactionList = () => {
   }, [dispatch]);
 
   const columns = [
+    {
+      field: "action",
+      headerName: "Akcja",
+      width: 100,
+      renderCell: (params) => {
+        return (
+          <Button
+            filled
+            onClick={() => navigate(`/transakcja/${params.row.id}`)}
+          >
+            Sczegóły
+          </Button>
+        );
+      },
+    },
     { field: "name", headerName: "Imię i nazwisko klienta", width: 200 },
     {
       field: "adres",
@@ -81,13 +100,7 @@ const TransactionList = () => {
       width: 160,
       editable: true,
       type: "singleSelect",
-      valueOptions: [
-        "Nie zapłacone",
-        "Zapłacone",
-        "Płatność zwrócona",
-        "W trakcie przygotowania",
-        "Wysłane",
-      ],
+      valueOptions: statusOptions,
     },
     {
       field: "kwota",

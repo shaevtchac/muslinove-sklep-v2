@@ -5,6 +5,7 @@ const ProductSchema = new mongoose.Schema(
     title: { type: String, default: "Nowy produkt" },
     desc: { type: String, default: "Wpisz opis produktu" },
     images: { type: Array },
+    variant: { type: String },
     categories: { type: Array },
     color: { type: String },
     price: {

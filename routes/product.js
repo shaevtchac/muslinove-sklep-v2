@@ -55,6 +55,18 @@ router.get("/find/:id", async (req, res) => {
     res.status(500).json(error);
   }
 });
+//get same variant ____________________________________________________________________________
+router.get("/findvariant/:variant", async (req, res) => {
+  try {
+    const products = await Product.find(
+      { variant: req.params.variant },
+      "_id, color"
+    );
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 
 //get all products ____________________________________________________________________________
 router.get("/", async (req, res) => {

@@ -139,7 +139,8 @@ const Product = () => {
   const newProductId = useSelector((state) => state.product.newProductId);
   const error = useSelector((state) => state.product.error);
   const isFetching = useSelector((state) => state.product.isFetching);
-  const [inputs, setInputs] = useState(product);
+  const { images, ...rest } = product;
+  const [inputs, setInputs] = useState(rest);
   const dispatch = useDispatch();
   const MONTHS = useMemo(
     () => [
@@ -299,6 +300,14 @@ const Product = () => {
               }}
               sx={{ width: "7rem", marginTop: "1rem" }}
             />
+            <TextField
+              label="Wariant:"
+              type="text"
+              name="variant"
+              value={inputs.variant}
+              onChange={handleChangeInputs}
+              sx={{ width: "7rem", marginTop: "1rem" }}
+            />
             <Autocomplete
               multiple
               id="tags-outlined"
@@ -347,6 +356,7 @@ const Product = () => {
               onChange={handleDescChange}
             />
             <Button
+              filled
               onClick={handleUpdateButtonClick}
               style={{ cursor: isFetching && "not-allowed" }}
             >

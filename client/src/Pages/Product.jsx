@@ -2,7 +2,7 @@ import { Add, Remove } from "@mui/icons-material";
 import Footer from "../Components/Footer";
 import Navbar from "../Components/Navbar";
 import { mobile } from "../responsive";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { publicRequest } from "../requestMethods";
 import { colors } from "../data";
@@ -52,6 +52,7 @@ const FilterContainer = styled.div`
 const Filter = styled.div`
   display: flex;
   align-items: center;
+  gap: 1rem;
 `;
 const FilterTitle = styled.span`
   font-size: 20px;
@@ -98,19 +99,29 @@ const Product = () => {
   const id = location.pathname.split("/")[2];
   const [product, setProduct] = useState({});
   const [quantity, setQuantity] = useState(1);
-  const [color, setColor] = useState("");
+  const [variants, setVariants] = useState([]);
   // const [size, setSize] = useState("");
   const dispatch = useDispatch();
   useEffect(() => {
-    const getProduct = async () => {
+    const getData = async () => {
       try {
         const res = await publicRequest.get("/products/find/" + id);
         setProduct(res.data);
+        try {
+          const variantRes = await publicRequest.get(
+            `/products/findvariant/${res.data.variant}`
+          );
+          setVariants(
+            variantRes.data.filter((product) => product._id !== res.data._id)
+          );
+        } catch (error) {
+          console.log(error);
+        }
       } catch (error) {
         console.log(error);
       }
     };
-    getProduct();
+    getData();
   }, [id]);
 
   const handleQuantity = (par) => {
@@ -143,7 +154,7 @@ const Product = () => {
           </Price>
           <FilterContainer>
             <Filter>
-              <FilterTitle>Kolor</FilterTitle>
+              <FilterTitle>Kolor:</FilterTitle>
 
               <FilterColor
                 color={
@@ -151,6 +162,22 @@ const Product = () => {
                     ?.colorCSS
                 }
               />
+            </Filter>
+            <Filter>
+              <FilterTitle>Inne dostępne kolory:</FilterTitle>
+              {variants.length === 0
+                ? "brak"
+                : variants.map((variant) => (
+                    <Link key={variant._id} to={`/produkt/${variant._id}`}>
+                      <FilterColor
+                        color={
+                          colors.find(
+                            (colorItem) => colorItem.id === variant.color
+                          )?.colorCSS
+                        }
+                      />
+                    </Link>
+                  ))}
             </Filter>
             {/* <Filter>
               <FilterTitle>Rozmiar</FilterTitle>
@@ -173,7 +200,7 @@ const Product = () => {
                 onClick={() => handleQuantity("inc")}
               />
             </AmountContainer>
-            <Button type="filled" onClick={handleAddToCart}>
+            <Button filled onClick={handleAddToCart}>
               DO KOSZYKA
             </Button>
           </AddContainer>

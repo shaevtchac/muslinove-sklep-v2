@@ -1,19 +1,12 @@
 import {
   AttachMoney,
-  BarChart,
-  ChatBubbleOutline,
-  DynamicFeed,
   LineStyle,
-  MailOutline,
   PermIdentity,
-  Report,
   Storefront,
-  Timeline,
   TrendingUp,
-  WorkOutline,
 } from "@material-ui/icons";
-import { SLink } from "./Reusables";
 import styled from "styled-components";
+import { SLink } from "./Reusables";
 
 const Container = styled.div`
   flex: 1;

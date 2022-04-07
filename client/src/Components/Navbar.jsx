@@ -1,14 +1,12 @@
-import { Badge } from "@mui/material";
-import { Search, ShoppingCartOutlined } from "@mui/icons-material";
-import React, { useState } from "react";
-import { mobile } from "../responsive";
-import { useDispatch, useSelector } from "react-redux";
 import styled from "@emotion/styled";
-import { SLink } from "../Reusables/StyledParts";
-import Avatar from "@mui/material/Avatar";
-import * as templateColors from "../Reusables/Constants/Colors";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
+import { ShoppingCartOutlined } from "@mui/icons-material";
+import { Badge, IconButton, Menu, MenuItem } from "@mui/material";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../redux/apiCalls";
+import { mobile } from "../responsive";
+import { SLink } from "../Reusables/StyledParts";
+import MyAvatar from "./MyAvatar";
 
 const Container = styled.nav`
   height: 60px;
@@ -18,7 +16,7 @@ const Container = styled.nav`
   })}
 `;
 const Wrapper = styled.div`
-  padding: 10px 20px;
+  padding: 2px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -35,44 +33,10 @@ const Right = styled.div`
   align-items: center;
   position: relative;
 `;
-const AvatarMenu = styled.div`
-  width: 150px;
-  background-color: ${templateColors.WHITE_TRANSPARENT_70};
-  border-radius: 5px;
-  position: absolute;
-  top: 47px;
-  right: -17px;
-  padding: 0.5rem;
-  z-index: 1;
-  opacity: ${(props) => (props.avatarMenuVisible ? 1 : 0)};
-`;
-const MenuItem = styled.div`
-  font-size: 14px;
-  cursor: pointer;
-  margin-left: 25px;
-  ${mobile({ fontSize: "12px", marginLeft: "10px" })}
-`;
-
-const AvatarMenuItem = styled(MenuItem)`
-  margin: 0;
-  text-align: center;
-`;
-// const Language = styled.div`
-//   font-size: 14px;
-//   cursor: pointer;
-//   margin-left: 25px;
-//   ${mobile({ display: "none" })}
-// `;
-// const SearchContainer = styled.div`
-//   border: 0.5px solid lightgray;
-//   display: flex;
-//   align-items: center;
-//   margin-left: 25px;
-//   padding: 5px;
-// `;
 
 const Navbar = () => {
   const numberOfItemsInCart = useSelector((state) => state.cart.itemsInCart);
+  const [anchorEl, setAnchorEl] = useState(null);
   const cartProducts = useSelector((state) =>
     state.cart.products.map((item) => ({
       product: item._id,
@@ -81,40 +45,18 @@ const Navbar = () => {
   );
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
-  const [avatarMenuVisible, setAvatarMenuVisible] = useState(false);
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleLogout = (e) => {
     e.preventDefault();
-    setAvatarMenuVisible(false);
     logOut(dispatch, user, { products: cartProducts });
   };
-  function stringToColor(string) {
-    let hash = 0;
-    let i;
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-    /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) {
-      hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = "#";
-
-    for (i = 0; i < 3; i += 1) {
-      const value = (hash >> (i * 8)) & 0xff;
-      color += `00${value.toString(16)}`.substr(-2);
-    }
-    /* eslint-enable no-bitwise */
-    return color;
-  }
-
-  function stringAvatar(name) {
-    return {
-      sx: {
-        bgcolor: stringToColor(name),
-      },
-      children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
-    };
-  }
   return (
     <Container>
       <Wrapper>
@@ -138,25 +80,33 @@ const Navbar = () => {
             </SLink>
           )}
 
-          <ClickAwayListener onClickAway={() => setAvatarMenuVisible(false)}>
+          {user && (
             <div>
-              {user && (
-                <Avatar
-                  {...stringAvatar(user.name)}
-                  onClick={() => setAvatarMenuVisible((prev) => !prev)}
-                  sx={{ cursor: "pointer", marginTop: "-7px" }}
-                />
-              )}
-              <AvatarMenu avatarMenuVisible={avatarMenuVisible}>
-                <AvatarMenuItem onClick={handleLogout}>Wyloguj</AvatarMenuItem>
+              <IconButton color="inherit" onClick={handleMenu}>
+                <MyAvatar username={user.name ? user.name : "N N"} />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleLogout}>Wyloguj</MenuItem>
                 <SLink to={"/zamowienia"}>
-                  <AvatarMenuItem onClick={() => setAvatarMenuVisible(false)}>
-                    Moje zamówienia
-                  </AvatarMenuItem>
+                  <MenuItem>Moje zamówienia</MenuItem>
                 </SLink>
-              </AvatarMenu>
+              </Menu>
             </div>
-          </ClickAwayListener>
+          )}
 
           <SLink to="/koszyk">
             <MenuItem>

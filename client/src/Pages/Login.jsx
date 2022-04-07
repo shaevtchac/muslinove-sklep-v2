@@ -6,7 +6,7 @@ import { mobile } from "../responsive";
 import TextField from "@mui/material/TextField";
 import { Button } from "../Reusables/StyledParts";
 import { useNavigate } from "react-router-dom";
-import { publicRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
 
 const Container = styled.div`
@@ -58,9 +58,8 @@ const Login = () => {
   const handleLoginButton = async (e) => {
     try {
       const user = await login(dispatch, { email, password });
-      console.log(user);
       try {
-        const res = await publicRequest.get(`carts/find/${user._id}`, {
+        const res = await userRequest.get(`carts/find/${user._id}`, user, {
           headers: { token: `Bearer ${user.accessToken}` },
         });
         const cartProducts = res.data.products;

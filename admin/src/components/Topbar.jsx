@@ -1,15 +1,15 @@
-import styled from "styled-components";
-import { NotificationsNone, Language, Settings } from "@material-ui/icons";
 import { Badge } from "@material-ui/core";
-import { SLink } from "./Reusables";
+import { NotificationsNone } from "@material-ui/icons";
+import Avatar from "@mui/material/Avatar";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { reset as userReset } from "../redux/userRedux";
+import styled from "styled-components";
 import { reset as productReset } from "../redux/productRedux";
 import { reset as transactionReset } from "../redux/transactionRedux";
-import Avatar from "@mui/material/Avatar";
+import { reset as userReset } from "../redux/userRedux";
 import * as templateColors from "./Constants/Colors";
-import { useState } from "react";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
+import { SLink } from "./Reusables";
 
 const Container = styled.nav`
   width: 100%;

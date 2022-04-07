@@ -22,13 +22,13 @@ router.post("/", async (req, res) => {
 });
 
 //user cart update________________________________________________________________________________
-router.put("/:userID", verifyToken, async (req, res) => {
+router.put("/:userId", verifyTokenAndAuthorization, async (req, res) => {
   console.log(req.params.userID, req.body);
   try {
     const updatedCart = await Cart.findOneAndUpdate(
-      { user: new ObjectId(req.params.userID) },
+      { user: new ObjectId(req.params.userId) },
       {
-        $set: req.body,
+        $set: req.body.cart,
       },
       { new: true }
     );
@@ -50,11 +50,11 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
 });
 
 //get user cart ____________________________________________________________________________
-router.get("/find/:userID", verifyTokenAndAuthorization, async (req, res) => {
+router.get("/find/:userId", verifyTokenAndAuthorization, async (req, res) => {
   //user id not cart id
   try {
     const cart = await Cart.findOne({
-      user: new ObjectId(req.params.userID),
+      user: new ObjectId(req.params.userId),
     }).populate({ path: "products.product" });
     res.status(200).json(cart);
   } catch (error) {

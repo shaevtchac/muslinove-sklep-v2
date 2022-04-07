@@ -26,9 +26,13 @@ export const login = async (dispatch, user) => {
 };
 export const logOut = async (dispatch, user, cart) => {
   try {
-    await publicRequest.put(`carts/${user._id}`, cart, {
-      headers: { token: `Bearer ${user.accessToken}` },
-    });
+    await publicRequest.put(
+      `carts/${user._id}`,
+      { user, cart },
+      {
+        headers: { token: `Bearer ${user.accessToken}` },
+      }
+    );
   } catch (error) {
     console.log(error);
   }

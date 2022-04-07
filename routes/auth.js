@@ -9,7 +9,7 @@ const { verifyOrderIdToken } = require("./verifyToken");
 router.post("/register", async (req, res) => {
   try {
     const rUser = await User.find({ email: req.body.email });
-    if (rUser) {
+    if (rUser.email) {
       return res
         .status(422)
         .send("Użytkownik o podanym adresie e-mail jest już zarejestrowany.");

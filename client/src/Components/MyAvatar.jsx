@@ -21,11 +21,9 @@ const MyAvatar = ({ username, rest }) => {
   }
 
   function stringAvatar(name) {
-    if (name) {
-      return {
-        children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
-      };
-    } else return { children: "NN" };
+    return {
+      children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+    };
   }
 
   return (

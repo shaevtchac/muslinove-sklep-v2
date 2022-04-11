@@ -92,7 +92,6 @@ const Register = () => {
 
     if (formValidatedOk()) {
       register(dispatch, user);
-      if (!error) navigate("/logowanie");
     }
   };
   return (
@@ -222,7 +221,7 @@ const Register = () => {
             Wyczyść formularz
           </Button>
         </Box>
-        {error && <Error>{errorMsg}</Error>}
+        {errorMsg.length > 0 && <Error>{errorMsg}</Error>}
       </Form>
     </Container>
   );

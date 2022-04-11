@@ -141,7 +141,9 @@ const Cart = () => {
 
   useEffect(() => {
     const getOrders = async () => {
-      const res = await userRequest.get(`/orders/find/${user._id}`);
+      const res = await publicRequest.get(`/orders/find/${user._id}`, {
+        headers: { token: `Bearer ${user.accessToken}` },
+      });
       // console.log(res.data);
       setOrders(res.data);
     };

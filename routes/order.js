@@ -1,4 +1,5 @@
 const Order = require("../models/Order");
+//const ObjectId = require("mongoose").Types.ObjectId;
 const {
   verifyToken,
   verifyTokenAndAdmin,
@@ -16,7 +17,9 @@ router.post("/", async (req, res) => {
   try {
     const savedOrder = await newOrder.save();
     // token to allow assigning the order to the new user if he/she decides to register afterwards (15mins to do it)
-    if (newOrder.userId === "niezarejestrowany") {
+
+    if (newOrder.user.toString() === "6228682b4ab3a9d1ab3b1a03") {
+      // or newOrder.user.equals(ObjectId("6228682b4ab3a9d1ab3b1a03"))
       orderToken = jwt.sign(
         {
           orderId: savedOrder.id,

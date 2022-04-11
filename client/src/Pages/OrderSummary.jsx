@@ -216,7 +216,7 @@ const Cart = () => {
           ...(inputs.phone && { phone: inputs.phone }),
         };
         //TODO: empty cart when order placed successfully
-        // dispatch(emptyCart());
+        dispatch(emptyCart());
         //temp data storage for unregistered users
         storeInputsAndOrderIdInlocalStore(dbRes.data._doc._id);
         window.location.href =

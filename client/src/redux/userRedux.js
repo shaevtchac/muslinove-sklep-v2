@@ -8,25 +8,24 @@ const userSlice = createSlice({
     errorMsg: "",
   },
   reducers: {
-    loginStart: (state) => {
+    fetchingStart: (state) => {
       state.isFetching = true;
+    },
+    fetchingEnd: (state) => {
+      state.isFetching = false;
     },
     loginSuccess: (state, action) => {
       state.isFetching = false;
       state.currentUser = action.payload;
     },
-    loginFailure: (state) => {
-      state.isFetching = false;
-      state.error = true;
-    },
-    registerStart: (state) => {
-      state.isFetching = true;
-    },
-    registerSuccess: (state) => {
+
+    registerSuccess: (state, action) => {
       state.isFetching = false;
       state.error = false;
+      state.currentUser = action.payload;
     },
-    registerFailure: (state, action) => {
+
+    fetchingFailure: (state, action) => {
       state.isFetching = false;
       state.error = true;
       state.errorMsg = action.payload;
@@ -38,12 +37,11 @@ const userSlice = createSlice({
 });
 
 export const {
-  loginStart,
+  fetchingStart,
+  fetchingEnd,
   loginSuccess,
-  loginFailure,
-  registerStart,
   registerSuccess,
-  registerFailure,
+  fetchingFailure,
   logout,
 } = userSlice.actions;
 export default userSlice.reducer;

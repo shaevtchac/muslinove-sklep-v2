@@ -34,8 +34,8 @@ import {
   getUsersFailure,
   getUsersStart,
   getUsersSuccess,
-  loginFailure,
-  loginStart,
+  fetchingFailure,
+  fetchingStart,
   loginSuccess,
   updateUserFailure,
   updateUserStart,
@@ -43,12 +43,12 @@ import {
 } from "./userRedux";
 
 export const login = async (dispatch, user) => {
-  dispatch(loginStart());
+  dispatch(fetchingStart());
   try {
     const res = await publicRequest.post("auth/login", user);
     dispatch(loginSuccess(res.data));
   } catch (error) {
-    dispatch(loginFailure());
+    dispatch(fetchingFailure());
     console.error(error);
   }
 };

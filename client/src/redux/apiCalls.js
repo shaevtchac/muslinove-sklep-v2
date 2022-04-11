@@ -5,25 +5,25 @@ import {
 } from "../requestMethods";
 import { emptyCart } from "./cartRedux";
 import {
-  loginFailure,
-  loginStart,
+  fetchingStart,
   logout,
   loginSuccess,
-  registerStart,
   registerSuccess,
-  registerFailure,
+  fetchingFailure,
+  fetchingEnd,
 } from "./userRedux";
 
 export const login = async (dispatch, user) => {
-  dispatch(loginStart());
+  dispatch(fetchingStart());
   try {
     const res = await publicRequest.post("auth/login", user);
     dispatch(loginSuccess(res.data));
     return res.data;
   } catch (error) {
-    dispatch(loginFailure());
+    dispatch(fetchingFailure());
   }
 };
+
 export const logOut = async (dispatch, user, cart) => {
   try {
     await publicRequest.put(
@@ -40,7 +40,7 @@ export const logOut = async (dispatch, user, cart) => {
   dispatch(logout());
 };
 export const register = async (dispatch, user, orderId) => {
-  dispatch(registerStart());
+  dispatch(fetchingStart());
   try {
     const userRes = await publicRequest.post("auth/register", user);
     const newUser = userRes.data;
@@ -71,6 +71,17 @@ export const register = async (dispatch, user, orderId) => {
     // console.log(error.response.data);
     // console.log(error.response.status);
     // console.log(error.response.headers);
-    dispatch(registerFailure(error.response.data));
+    dispatch(fetchingFailure(error.response.data));
+  }
+};
+
+export const resetPassword = async (dispatch, email) => {
+  dispatch(fetchingStart());
+  try {
+    const res = publicRequest.post("/email/reset_password", email);
+    dispatch(fetchingEnd());
+  } catch (error) {
+    console.log(error);
+    dispatch(fetchingFailure(error.response.data));
   }
 };

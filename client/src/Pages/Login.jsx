@@ -59,7 +59,7 @@ const Login = () => {
     try {
       const user = await login(dispatch, { email, password });
       try {
-        const res = await userRequest.get(`carts/find/${user._id}`, user, {
+        const res = await publicRequest.get(`carts/find/${user._id}`, {
           headers: { token: `Bearer ${user.accessToken}` },
         });
         const cartProducts = res.data.products;
@@ -74,8 +74,6 @@ const Login = () => {
     } catch (loginError) {
       console.error(loginError);
     }
-
-    navigate(-1);
   };
   return (
     <Container>

@@ -40,7 +40,7 @@ const verifyOrderIdToken = (req, res, next) => {
   if (authHeader) {
     const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.JWT_SEC, (err, order) => {
-      if (err) res.status(403).json("Nieprawidłowy token!");
+      if (err) return res.status(403).json("Nieprawidłowy token!");
       req.order = order;
       next();
     });

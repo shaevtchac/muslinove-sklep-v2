@@ -3,6 +3,7 @@ const {
   verifyTokenAndAdmin,
   verifyTokenAndAuthorization,
 } = require("./verifyToken");
+const CryptoJS = require("crypto-js");
 
 const router = require("express").Router();
 
@@ -22,9 +23,10 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
       },
       { new: true }
     );
-    res.status(200).json(updatedUser);
+    const { password, ...other } = updatedUser._doc;
+    res.status(200).json(other);
   } catch (error) {
-    res.status(500).json(error);
+    console.error(error);
   }
 });
 

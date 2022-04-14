@@ -23,7 +23,6 @@ router.post("/", async (req, res) => {
 
 //user cart update________________________________________________________________________________
 router.put("/:userId", verifyTokenAndAuthorization, async (req, res) => {
-  console.log(req.params.userID, req.body);
   try {
     const updatedCart = await Cart.findOneAndUpdate(
       { user: new ObjectId(req.params.userId) },

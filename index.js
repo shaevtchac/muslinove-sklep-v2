@@ -9,6 +9,7 @@ const cartRoute = require("./routes/cart");
 const orderRoute = require("./routes/order");
 const tpayRoute = require("./routes/tpay");
 const imagesRoute = require("./routes/images");
+const emailRoute = require("./routes/email");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 
@@ -33,6 +34,7 @@ app.use("/api/carts", cartRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/tpay", tpayRoute);
 app.use("/api/images", imagesRoute);
+app.use("/api/email", emailRoute);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));

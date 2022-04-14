@@ -8,6 +8,7 @@ import { Button } from "../Reusables/StyledParts";
 import { useNavigate } from "react-router-dom";
 import { publicRequest, userRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   width: 100vw;
@@ -38,10 +39,8 @@ const Title = styled.h1`
   margin-bottom: 20px;
 `;
 
-const Link = styled.a`
+const SLink = styled(Link)`
   font-size: 0.8rem;
-  text-decoration: underline;
-  cursor: pointer;
 `;
 
 const Error = styled.span`
@@ -100,8 +99,8 @@ const Login = () => {
             ZALOGUJ
           </Button>
           {error && <Error>Coś poszło nie tak</Error>}
-          <Link>Zapomniałeś/aś hasła?</Link>
-          <Link>Utwórz nowe konto</Link>
+          <SLink to={"/zapomniane_haslo"}>Zapomniałeś/aś hasła?</SLink>
+          <SLink to={"/rejestracja"}>Utwórz nowe konto</SLink>
         </Form>
       </Wrapper>
     </Container>

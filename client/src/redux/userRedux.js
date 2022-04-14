@@ -13,6 +13,8 @@ const userSlice = createSlice({
     },
     fetchingEnd: (state) => {
       state.isFetching = false;
+      state.error = false;
+      state.errorMsg = "";
     },
     loginSuccess: (state, action) => {
       state.isFetching = false;

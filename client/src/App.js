@@ -16,6 +16,8 @@ import Register from "./Pages/Register";
 import Success from "./Pages/Success";
 import OrderSummary from "./Pages/OrderSummary";
 import Orders from "./Pages/Orders";
+import PaswordReset from "./Pages/PaswordReset";
+import NewPassword from "./Pages/NewPassword";
 
 function App() {
   const user = useSelector((state) => state.user.currentUser);
@@ -41,6 +43,9 @@ function App() {
         </Route>
         <Route path="/podsumowanie" element={<OrderSummary />} />
         <Route path="/platnosc_ok" element={<Success />} />
+        <Route path="/zapomniane_haslo" element={<PaswordReset />} />
+        <Route path="/nowe_haslo" element={<NewPassword />} />
+
         <Route
           path="/logowanie"
           element={

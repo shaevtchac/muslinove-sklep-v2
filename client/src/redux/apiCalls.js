@@ -77,9 +77,30 @@ export const register = async (dispatch, user, orderId) => {
 
 export const resetPassword = async (dispatch, email) => {
   dispatch(fetchingStart());
+
+  publicRequest
+    .post("/email/reset_password", email)
+    .then(
+      () => {
+        dispatch(fetchingEnd());
+      },
+      (err) => {
+        dispatch(fetchingFailure(err.response.data));
+      }
+    )
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const validateToken = async (dispatch, token, userId) => {
+  dispatch(fetchingStart);
   try {
-    const res = publicRequest.post("/email/reset_password", email);
-    dispatch(fetchingEnd());
+    const res = await publicRequest.post("/auth/validate_token", {
+      token,
+      userId,
+    });
+    dispatch(loginSuccess(res.data));
   } catch (error) {
     console.log(error);
     dispatch(fetchingFailure(error.response.data));

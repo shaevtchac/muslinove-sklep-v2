@@ -18,6 +18,7 @@ import OrderSummary from "./Pages/OrderSummary";
 import Orders from "./Pages/Orders";
 import PaswordReset from "./Pages/PaswordReset";
 import NewPassword from "./Pages/NewPassword";
+import UserSettings from "./Pages/UserSettings";
 
 function App() {
   const user = useSelector((state) => state.user.currentUser);
@@ -40,6 +41,7 @@ function App() {
         <Route path="/koszyk" element={<Cart />} />
         <Route path="/" element={<PrivateRoute />}>
           <Route path="/zamowienia" element={<Orders />} />
+          <Route path="/ustawienia_konta" element={<UserSettings />} />
         </Route>
         <Route path="/podsumowanie" element={<OrderSummary />} />
         <Route path="/platnosc_ok" element={<Success />} />

@@ -53,7 +53,7 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
-    !user && res.status(401).json("Błędne dane logowania!");
+    if (!user) return res.status(401).json("Błędne dane logowania!");
     const hashedPasswordFromDB = CryptoJS.AES.decrypt(
       user.password,
       process.env.PASS_SEC
@@ -68,7 +68,7 @@ router.post("/login", async (req, res) => {
 
     res.status(200).json({ ...others, accessToken });
   } catch (error) {
-    res.status(500).json(error);
+    console.error(error);
   }
 });
 //update unregistered order

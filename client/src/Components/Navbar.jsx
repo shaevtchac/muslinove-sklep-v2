@@ -104,6 +104,9 @@ const Navbar = () => {
                 <SLink to={"/zamowienia"}>
                   <MenuItem>Moje zamówienia</MenuItem>
                 </SLink>
+                <SLink to={"/ustawienia_konta"}>
+                  <MenuItem>Ustawienia konta</MenuItem>
+                </SLink>
               </Menu>
             </div>
           )}

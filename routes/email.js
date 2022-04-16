@@ -11,15 +11,15 @@ const BASE_URL =
 
 //Reset Password _____________________________________________________________________________________________
 router.post("/reset_password", async (req, res) => {
+  const resetPasswordLink = `${BASE_URL}zapomniane_haslo`;
   try {
     const user = await User.findOne(req.body);
     if (!user) {
       try {
-        const link = `${BASE_URL}zapomniane_haslo`;
         sendEmail(
           req.body.email,
           "Resetowanie hasła muslinove.pl",
-          { link: link },
+          { link: resetPasswordLink },
           "./template/requestResetPasswordWrongEmail.handlebars"
         );
         return res.status(202).send("Email wysłany.");
@@ -45,7 +45,11 @@ router.post("/reset_password", async (req, res) => {
           sendEmail(
             user.email,
             "Resetowanie hasła muslinove.pl",
-            { name: user.name ? user.name.split(" ")[0] : "", link: link },
+            {
+              name: user.name ? user.name.split(" ")[0] : "",
+              link,
+              resetPasswordLink,
+            },
             "./template/requestResetPassword.handlebars"
           );
           return res.status(202).send("Email wysłany.");

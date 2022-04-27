@@ -11,6 +11,7 @@ import Cart from "./Pages/Cart";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Product from "./Pages/Product";
+import Favorites from "./Pages/Favorites";
 import ProductList from "./Pages/ProductList";
 import Register from "./Pages/Register";
 import Success from "./Pages/Success";
@@ -42,6 +43,7 @@ function App() {
         <Route path="/" element={<PrivateRoute />}>
           <Route path="/zamowienia" element={<Orders />} />
           <Route path="/ustawienia_konta" element={<UserSettings />} />
+          <Route path="/ulubione" element={<Favorites />} />
         </Route>
         <Route path="/podsumowanie" element={<OrderSummary />} />
         <Route path="/platnosc_ok" element={<Success />} />

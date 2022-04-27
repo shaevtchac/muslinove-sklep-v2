@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Product from "./Product";
 import { publicRequest } from "../requestMethods";
 import { Title } from "../Reusables/StyledParts";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   padding: 0 1rem 1rem 1rem;
@@ -13,20 +14,26 @@ const ProductWrap = styled.div`
   flex-wrap: wrap;
 `;
 
-const Products = ({ cat, filters, sort }) => {
+const Products = ({ favorites, cat, filters, sort }) => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const user = useSelector((state) => state.user.currentUser);
+  const favoriteProducts = useSelector((state) => state.favorites.products);
   useEffect(() => {
     const getProducts = async () => {
-      try {
-        const res = await publicRequest.get(
-          cat ? `products?category=${cat}` : "products"
-        );
-        setProducts(res.data);
-      } catch (error) {}
+      if (favorites) {
+        setProducts(favoriteProducts);
+      } else {
+        try {
+          const res = await publicRequest.get(
+            cat ? `products?category=${cat}` : "products"
+          );
+          setProducts(res.data);
+        } catch (error) {}
+      }
     };
     getProducts();
-  }, [cat]);
+  }, [cat, favoriteProducts, favorites, user]);
   useEffect(() => {
     cat &&
       setFilteredProducts(

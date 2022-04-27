@@ -43,6 +43,11 @@ const Navbar = () => {
       quantity: item.quantity,
     }))
   );
+  const favProducts = useSelector((state) =>
+    state.favorites.products.map((item) => ({
+      product: item._id,
+    }))
+  );
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const handleMenu = (event) => {
@@ -51,7 +56,12 @@ const Navbar = () => {
 
   const handleLogout = (e) => {
     e.preventDefault();
-    logOut(dispatch, user, { products: cartProducts });
+    logOut(
+      dispatch,
+      user,
+      { products: cartProducts },
+      { products: favProducts }
+    );
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -106,6 +116,9 @@ const Navbar = () => {
                 </SLink>
                 <SLink to={"/ustawienia_konta"}>
                   <MenuItem>Ustawienia konta</MenuItem>
+                </SLink>
+                <SLink to={"/ulubione"}>
+                  <MenuItem>Ulubione</MenuItem>
                 </SLink>
               </Menu>
             </div>

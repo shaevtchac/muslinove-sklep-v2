@@ -7,7 +7,8 @@ import TextField from "@mui/material/TextField";
 import { Button } from "../Reusables/StyledParts";
 import { useNavigate } from "react-router-dom";
 import { publicRequest, userRequest } from "../requestMethods";
-import { addProduct } from "../redux/cartRedux";
+import { addProduct as addProductToCart } from "../redux/cartRedux";
+import { addProduct as addProductToFavorites } from "../redux/favoritesRedux";
 import { Link } from "react-router-dom";
 
 const Container = styled.div`
@@ -57,6 +58,7 @@ const Login = () => {
   const handleLoginButton = async (e) => {
     try {
       const user = await login(dispatch, { email, password });
+      //load cart
       try {
         const res = await publicRequest.get(`carts/find/${user._id}`, {
           headers: { token: `Bearer ${user.accessToken}` },
@@ -64,7 +66,26 @@ const Login = () => {
         const cartProducts = res.data.products;
         if (cartProducts.length > 0) {
           cartProducts.forEach((item) =>
-            dispatch(addProduct({ ...item.product, quantity: item.quantity }))
+            dispatch(
+              addProductToCart({ ...item.product, quantity: item.quantity })
+            )
+          );
+        }
+      } catch (error) {
+        console.error(error);
+      }
+      try {
+        const res = await publicRequest.get(`favorites/find/${user._id}`, {
+          headers: { token: `Bearer ${user.accessToken}` },
+        });
+        const favProducts = res.data.products;
+        if (favProducts.length > 0) {
+          favProducts.forEach((item) =>
+            dispatch(
+              addProductToFavorites({
+                ...item.product,
+              })
+            )
           );
         }
       } catch (error) {

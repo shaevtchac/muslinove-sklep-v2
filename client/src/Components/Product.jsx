@@ -17,6 +17,7 @@ import {
 } from "../redux/favoritesRedux";
 import { mobile } from "../responsive";
 import * as colors from "../Reusables/Constants/Colors";
+import Tooltip from "@mui/material/Tooltip";
 
 const Info = styled.div`
   cursor: pointer;
@@ -165,15 +166,21 @@ const Product = ({ item }) => {
       <Image src={item.images[0]} />
       <Info onClick={handleClick}>
         <Icon>
-          <ShoppingCartOutlined onClick={(e) => handleAddOneToCart(e)} />
+          <Tooltip title="Dodaj 1szt. do koszyka">
+            <ShoppingCartOutlined onClick={(e) => handleAddOneToCart(e)} />
+          </Tooltip>
         </Icon>
         {/* <Link to={`/produkt/${item._id}`}> */}
         <Icon>
-          <SearchOutlined />
+          <Tooltip title="Wyświetl szybki podgląd produktu (nie działa jeszcze)">
+            <SearchOutlined />
+          </Tooltip>
         </Icon>
         {/* </Link> */}
         <Icon>
-          <FavoriteBorderOutlined onClick={(e) => handleAddToFavorites(e)} />
+          <Tooltip title="Dodaj do ulubionych">
+            <FavoriteBorderOutlined onClick={(e) => handleAddToFavorites(e)} />
+          </Tooltip>
         </Icon>
         <TitlePriceContainer>
           <ProductTitle>{item.title}</ProductTitle>{" "}

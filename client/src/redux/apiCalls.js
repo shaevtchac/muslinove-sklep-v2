@@ -4,6 +4,7 @@ import {
   unregisteredOrderUpdateRequest,
 } from "../requestMethods";
 import { emptyCart } from "./cartRedux";
+import { emptyFavorites } from "./favoritesRedux";
 import {
   fetchingStart,
   logout,
@@ -20,11 +21,12 @@ export const login = async (dispatch, user) => {
     dispatch(loginSuccess(res.data));
     return res.data;
   } catch (error) {
-    dispatch(fetchingFailure());
+    dispatch(fetchingFailure(error.response.data));
   }
 };
 
-export const logOut = async (dispatch, user, cart) => {
+export const logOut = async (dispatch, user, cart, favorites) => {
+  dispatch(fetchingStart());
   try {
     await publicRequest.put(
       `carts/${user._id}`,
@@ -35,8 +37,19 @@ export const logOut = async (dispatch, user, cart) => {
     );
   } catch (error) {
     console.log(error);
+    dispatch(fetchingFailure(error.response.data));
   }
+  try {
+    await publicRequest.put(`favorites/${user._id}`, favorites, {
+      headers: { token: `Bearer ${user.accessToken}` },
+    });
+  } catch (error) {
+    console.log(error);
+    dispatch(fetchingFailure(error.response.data));
+  }
+  dispatch(fetchingEnd());
   dispatch(emptyCart());
+  dispatch(emptyFavorites());
   dispatch(logout());
 };
 export const register = async (dispatch, user, orderId) => {
@@ -50,6 +63,12 @@ export const register = async (dispatch, user, orderId) => {
       userRequest.post("carts", { user: newUser._id });
     } catch (cartErr) {
       console.error(cartErr);
+    }
+    //create empty favorites for new user
+    try {
+      userRequest.post("favorites", { user: newUser._id });
+    } catch (favErr) {
+      console.error(favErr);
     }
     //assign order to new user if it was placed before registration
     if (orderId) {

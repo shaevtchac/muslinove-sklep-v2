@@ -1,4 +1,4 @@
-const favorites = require("../models/favorites");
+const Favorites = require("../models/Favorites");
 const ObjectId = require("mongoose").Types.ObjectId;
 const {
   verifyTokenAndAdmin,
@@ -10,7 +10,7 @@ const router = require("express").Router();
 //ADD ___________________________________________________________________________________
 
 router.post("/", async (req, res) => {
-  const newfavorites = new favorites(req.body);
+  const newfavorites = new Favorites(req.body);
 
   try {
     const savedfavorites = await newfavorites.save();
@@ -23,10 +23,10 @@ router.post("/", async (req, res) => {
 //user favorites update________________________________________________________________________________
 router.put("/:userId", verifyTokenAndAuthorization, async (req, res) => {
   try {
-    const updatedfavorites = await favorites.findOneAndUpdate(
+    const updatedfavorites = await Favorites.findOneAndUpdate(
       { user: new ObjectId(req.params.userId) },
       {
-        $set: req.body.favorites,
+        $set: req.body,
       },
       { new: true }
     );
@@ -40,7 +40,7 @@ router.put("/:userId", verifyTokenAndAuthorization, async (req, res) => {
 //delete____________________________________________________________________________
 router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
   try {
-    await favorites.findByIdAndDelete(req.params.id);
+    await Favorites.findByIdAndDelete(req.params.id);
     res.status(200).json("Ulubione usunięte.");
   } catch (error) {
     res.status(500).json(error);
@@ -51,11 +51,9 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
 router.get("/find/:userId", verifyTokenAndAuthorization, async (req, res) => {
   //user id not favorites id
   try {
-    const favorites = await favorites
-      .findOne({
-        user: new ObjectId(req.params.userId),
-      })
-      .populate({ path: "products.product" });
+    const favorites = await Favorites.findOne({
+      user: new ObjectId(req.params.userId),
+    }).populate({ path: "products.product" });
     res.status(200).json(favorites);
   } catch (error) {
     res.status(500).json(error);
@@ -65,8 +63,8 @@ router.get("/find/:userId", verifyTokenAndAuthorization, async (req, res) => {
 //get all _______________________________________________________________________________________________
 router.get("/", verifyTokenAndAdmin, async (req, res) => {
   try {
-    const favoritess = await favorites.find();
-    res.status(200).json(favoritess);
+    const favorites = await Favorites.find();
+    res.status(200).json(favorites);
   } catch (error) {
     res.status(500).json(error);
   }

@@ -63,11 +63,6 @@ const Products = ({ favorites, cat, filters, sort }) => {
 
   return (
     <Container>
-      {!cat && (
-        <Title style={{ marginBottom: "1rem", textAlign: "center" }}>
-          Popularne Produkty
-        </Title>
-      )}
       <ProductWrap>
         {cat
           ? filteredProducts.map((item) => (

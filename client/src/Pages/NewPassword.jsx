@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
 import Navbar from "../Components/Navbar";
-import { Form, useForm } from "../Components/useForm";
+import { Form, useForm } from "../Hooks/useForm";
 import { validateToken } from "../redux/apiCalls";
 import { fetchingStart } from "../redux/userRedux";
 import { publicRequest } from "../requestMethods";

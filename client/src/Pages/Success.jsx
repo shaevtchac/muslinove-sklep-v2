@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as templateColors from "../Reusables/Constants/Colors";
 import { Grid } from "@mui/material";
 import { useState } from "react";
-import { useForm, Form } from "../Components/useForm";
+import { useForm, Form } from "../Hooks/useForm";
 import { register } from "../redux/apiCalls";
 
 const name = localStorage.name;

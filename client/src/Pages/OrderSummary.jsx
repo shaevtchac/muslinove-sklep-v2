@@ -8,7 +8,7 @@ import { mobile } from "../responsive";
 import * as templateColors from "../Reusables/Constants/Colors";
 import { Button, Title, Input } from "../Reusables/StyledParts";
 import isEmail from "validator/es/lib/isEmail";
-import { useForm, Form } from "../Components/useForm";
+import { useForm, Form } from "../Hooks/useForm";
 import { useEffect } from "react";
 import { emptyCart } from "../redux/cartRedux";
 
@@ -215,7 +215,6 @@ const Cart = () => {
           zip: inputs.postalCode,
           ...(inputs.phone && { phone: inputs.phone }),
         };
-        //TODO: empty cart when order placed successfully
         dispatch(emptyCart());
         //temp data storage for unregistered users
         storeInputsAndOrderIdInlocalStore(dbRes.data._doc._id);

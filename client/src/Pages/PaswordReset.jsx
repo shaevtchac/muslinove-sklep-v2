@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../Components/Navbar";
-import { Form } from "../Components/useForm";
+import { Form } from "../Hooks/useForm";
 import { resetPassword } from "../redux/apiCalls";
 import { fetchingEnd } from "../redux/userRedux";
 import { Button, Card, Input, Title } from "../Reusables/StyledParts";

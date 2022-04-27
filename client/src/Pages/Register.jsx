@@ -4,7 +4,7 @@ import Divider from "@mui/material/Divider";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import isEmail from "validator/es/lib/isEmail";
-import { Form, useForm } from "../Components/useForm";
+import { Form, useForm } from "../Hooks/useForm";
 import { register } from "../redux/apiCalls";
 import { Button, Title, Input } from "../Reusables/StyledParts";
 

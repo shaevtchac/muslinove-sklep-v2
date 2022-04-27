@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../Components/Footer";
 import Navbar from "../Components/Navbar";
-import { Form, useForm } from "../Components/useForm";
+import { Form, useForm } from "../Hooks/useForm";
 import {
   fetchingEnd,
   fetchingFailure,

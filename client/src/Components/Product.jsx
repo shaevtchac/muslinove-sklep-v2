@@ -3,17 +3,20 @@ import {
   FavoriteBorderOutlined,
   SearchOutlined,
   ShoppingCartOutlined,
-  Close,
 } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import * as colors from "../Reusables/Constants/Colors";
-import { addProduct, decreaseQuantity } from "../redux/cartRedux";
-import Button from "@mui/material/Button";
-import Snackbar from "@mui/material/Snackbar";
-import IconButton from "@mui/material/IconButton";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSnackBar } from "../Hooks/useSnackBar";
+import {
+  addProduct as addProductToCart,
+  decreaseQuantity,
+} from "../redux/cartRedux";
+import {
+  addProduct as addProductToFavorites,
+  removeProduct as removeProductFromFavorites,
+} from "../redux/favoritesRedux";
 import { mobile } from "../responsive";
+import * as colors from "../Reusables/Constants/Colors";
 
 const Info = styled.div`
   cursor: pointer;
@@ -102,50 +105,59 @@ const ProductPrice = styled.div`
 const Product = ({ item }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const {
+    SnackBar: CartSnackBar,
+    open: openCartSnackBar,
+    close: closeCartSnackBar,
+    opened: cartSnackBarOpened,
+  } = useSnackBar();
+  const {
+    SnackBar: FavSnackBar,
+    open: openFavSnackBar,
+    close: closeFavSnackBar,
+    opened: favSnackBarOpened,
+  } = useSnackBar();
 
   const handleClick = () => {
     navigate(`/produkt/${item._id}`);
   };
   const handleAddOneToCart = (e) => {
     e.stopPropagation();
-    dispatch(addProduct({ ...item, quantity: 1 }));
-    setOpenSnackBar(true);
+    dispatch(addProductToCart({ ...item, quantity: 1 }));
+    openCartSnackBar();
   };
 
   const handleRemoveOneFromCart = (e) => {
     e.stopPropagation();
     dispatch(decreaseQuantity(item));
-    handleCloseSnackBar();
+    handleCloseCartSnackBar();
   };
 
-  const handleCloseSnackBar = (event, reason) => {
+  const handleRemoveFromFavorites = (e) => {
+    e.stopPropagation();
+    dispatch(removeProductFromFavorites(item));
+    handleCloseFavSnackBar();
+  };
+  const handleAddToFavorites = (e) => {
+    e.stopPropagation();
+    dispatch(addProductToFavorites(item));
+    openFavSnackBar();
+  };
+
+  const handleCloseCartSnackBar = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
 
-    setOpenSnackBar(false);
+    closeCartSnackBar();
   };
+  const handleCloseFavSnackBar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
-  const action = (
-    <>
-      <Button
-        color="secondary"
-        size="small"
-        onClick={(e) => handleRemoveOneFromCart(e)}
-      >
-        COFNIJ
-      </Button>
-      <IconButton
-        size="small"
-        aria-label="close"
-        color="inherit"
-        onClick={handleCloseSnackBar}
-      >
-        <Close fontSize="small" />
-      </IconButton>
-    </>
-  );
+    closeFavSnackBar();
+  };
 
   return (
     <Container>
@@ -161,19 +173,26 @@ const Product = ({ item }) => {
         </Icon>
         {/* </Link> */}
         <Icon>
-          <FavoriteBorderOutlined />
+          <FavoriteBorderOutlined onClick={(e) => handleAddToFavorites(e)} />
         </Icon>
         <TitlePriceContainer>
           <ProductTitle>{item.title}</ProductTitle>{" "}
           <ProductPrice>{item.price} zł</ProductPrice>
         </TitlePriceContainer>
       </Info>
-      <Snackbar
-        open={openSnackBar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackBar}
-        message="Dodano 1 sztukę do koszyka."
-        action={action}
+      <CartSnackBar
+        message={"Dodano 1 szt. do koszyka"}
+        opened={cartSnackBarOpened}
+        type={"success"}
+        close={handleCloseCartSnackBar}
+        undoFunction={handleRemoveOneFromCart}
+      />
+      <FavSnackBar
+        message={"Dodano do ulubionych"}
+        opened={favSnackBarOpened}
+        type={"success"}
+        close={handleCloseFavSnackBar}
+        undoFunction={handleRemoveFromFavorites}
       />
     </Container>
   );

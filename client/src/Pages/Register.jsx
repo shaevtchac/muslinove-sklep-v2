@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import isEmail from "validator/es/lib/isEmail";
 import { Form, useForm } from "../Hooks/useForm";
 import { register } from "../redux/apiCalls";
+// import { userRequest } from "../requestMethods";
 import { Button, Title, Input } from "../Reusables/StyledParts";
 
 const Container = styled.div`
@@ -77,6 +78,14 @@ const Register = () => {
     useForm(inputsInitialState, true, formValidatedOk);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  // const sendWelcomeEmail = (e, user) => {
+  //   e.preventDefault();
+  //   try {
+  //     userRequest.post("email/welcome", user);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const handleCreateButtonClick = (e) => {
     e.preventDefault();
@@ -219,7 +228,14 @@ const Register = () => {
             style={{ float: "right", marginRight: "1rem" }}
           >
             Wyczyść formularz
-          </Button>
+          </Button>{" "}
+          {/* <Button
+            onClick={(e) =>
+              sendWelcomeEmail(e, { email: inputs.email, name: inputs.name })
+            }
+          >
+            email
+          </Button> */}
         </Box>
         {errorMsg.length > 0 && <Error>{errorMsg}</Error>}
       </Form>

@@ -73,16 +73,20 @@ export const register = async (dispatch, user, orderId) => {
     //assign order to new user if it was placed before registration
     if (orderId) {
       try {
-        const ordRes = await unregisteredOrderUpdateRequest.put(
-          `auth/${orderId}`,
-          { user: newUser._id }
-        );
+        await unregisteredOrderUpdateRequest.put(`auth/${orderId}`, {
+          user: newUser._id,
+        });
       } catch (orderUpdErr) {
         console.error(
           "Problem ze zakualizowaniem id w zamówieniu złożonym przez niezarejestrowanego użytkownika"
         );
         console.error(orderUpdErr);
       }
+    }
+    try {
+      await userRequest.post("email/welcome", newUser);
+    } catch (error) {
+      console.error(error.response.data);
     }
   } catch (error) {
     console.error("problem z utworzeniem nowego użytkownika");

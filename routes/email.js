@@ -71,5 +71,19 @@ router.post("/reset_password", async (req, res) => {
     res.status(500).send(userError);
   }
 });
-
+//welcome email
+router.post("/welcome", async (req, res) => {
+  const user = req.body;
+  try {
+    sendEmail(
+      user.email,
+      "Witamy w muslinove.pl",
+      { name: user.name ? user.name.split(" ")[0] : "" },
+      "./template/welcome.handlebars"
+    );
+    return res.status(202).send("Email wysłany.");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 module.exports = router;

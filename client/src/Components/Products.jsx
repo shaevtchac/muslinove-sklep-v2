@@ -35,7 +35,7 @@ const Products = ({ favorites, cat, filters, sort }) => {
     getProducts();
   }, [cat, favoriteProducts, favorites, user]);
   useEffect(() => {
-    cat &&
+    (cat || favorites) &&
       setFilteredProducts(
         products.filter((item) =>
           Object.entries(filters).every(([key, value]) =>
@@ -43,7 +43,7 @@ const Products = ({ favorites, cat, filters, sort }) => {
           )
         )
       );
-  }, [products, cat, filters]);
+  }, [products, cat, filters, favorites]);
 
   useEffect(() => {
     if (sort === "najnowsze") {
@@ -64,7 +64,7 @@ const Products = ({ favorites, cat, filters, sort }) => {
   return (
     <Container>
       <ProductWrap>
-        {cat
+        {cat || favorites
           ? filteredProducts.map((item) => (
               <Product item={item} key={item._id} />
             ))

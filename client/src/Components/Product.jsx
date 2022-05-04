@@ -1,7 +1,6 @@
 import styled from "@emotion/styled/macro";
 import {
   FavoriteBorderOutlined,
-  SearchOutlined,
   ShoppingCartOutlined,
 } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
@@ -28,17 +27,15 @@ const Info = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.2);
   z-index: 3;
   display: flex;
-  align-items: center;
-  justify-content: center;
   transition: all 0.5s ease;
 `;
 
 const Container = styled.div`
   flex: 1;
   min-width: 280px;
+  /* max-width: 400px; */
   height: 380px;
   display: flex;
   align-items: center;
@@ -58,8 +55,9 @@ const Circle = styled.div`
   position: absolute;
 `;
 const Image = styled.img`
-  height: 100%;
+  height: calc(100% - 60px);
   z-index: 2;
+  align-self: flex-start;
 `;
 
 const Icon = styled.div`
@@ -80,9 +78,10 @@ const Icon = styled.div`
   }
 `;
 const TitlePriceContainer = styled.div`
-  background: linear-gradient(#00000000, #00000084);
+  /* background: linear-gradient(#00000000, #00000084); */
+  background-color: ${colors.TEXT_COLOR_DARK};
   width: 100%;
-  height: 100px;
+  height: 60px;
   position: absolute;
   bottom: 0;
   padding: 1rem;
@@ -90,17 +89,16 @@ const TitlePriceContainer = styled.div`
   gap: 1rem;
   align-items: center;
   justify-content: space-between;
+  z-index: 3;
 `;
 
 const ProductTitle = styled.div`
   color: white;
   font-weight: 600;
-  font-size: calc(0.9rem + 1vw);
 `;
 const ProductPrice = styled.div`
   color: white;
-  font-size: calc(1rem + 1vw);
-  font-weight: 200;
+  font-size: calc(0.7rem + 1vw);
 `;
 
 const Product = ({ item }) => {
@@ -170,23 +168,17 @@ const Product = ({ item }) => {
             <ShoppingCartOutlined onClick={(e) => handleAddOneToCart(e)} />
           </Tooltip>
         </Icon>
-        {/* <Link to={`/produkt/${item._id}`}> */}
-        <Icon>
-          <Tooltip title="Wyświetl szybki podgląd produktu (nie działa jeszcze)">
-            <SearchOutlined />
-          </Tooltip>
-        </Icon>
-        {/* </Link> */}
+
         <Icon>
           <Tooltip title="Dodaj do ulubionych">
             <FavoriteBorderOutlined onClick={(e) => handleAddToFavorites(e)} />
           </Tooltip>
         </Icon>
-        <TitlePriceContainer>
-          <ProductTitle>{item.title}</ProductTitle>{" "}
-          <ProductPrice>{item.price} zł</ProductPrice>
-        </TitlePriceContainer>
       </Info>
+      <TitlePriceContainer>
+        <ProductTitle>{item.title}</ProductTitle>{" "}
+        <ProductPrice>{item.price} zł</ProductPrice>
+      </TitlePriceContainer>
       <CartSnackBar
         message={"Dodano 1 szt. do koszyka"}
         opened={cartSnackBarOpened}

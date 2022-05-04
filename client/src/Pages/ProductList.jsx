@@ -10,6 +10,7 @@ import { mobile } from "../responsive";
 const Container = styled.div``;
 const Title = styled.h1`
   margin: 20px;
+  color: white;
 `;
 const FilterContainer = styled.div`
   display: flex;
